@@ -437,10 +437,8 @@ impl<'a> Context<'a> {
             self.should_match_name = false;
             if let Some(entry) = self.sess.opts.externs.get(&self.crate_name.as_str()) {
                 // Only use `--extern crate_name=path` here, not `--extern crate_name`.
-                if entry.locations.iter().any(|l| l.is_some()) {
-                    return self.find_commandline_library(
-                        entry.locations.iter().filter_map(|l| l.as_ref()),
-                    );
+                if let Some(files) = entry.files() {
+                    return self.find_commandline_library(files);
                 }
             }
             self.should_match_name = true;

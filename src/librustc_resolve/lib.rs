@@ -1121,9 +1121,34 @@ impl<'a> Resolver<'a> {
         let mut definitions = Definitions::default();
         definitions.create_root_def(crate_name, session.local_crate_disambiguator());
 
-        let mut extern_prelude: FxHashMap<Ident, ExternPreludeEntry<'_>> =
-            session.opts.externs.iter().map(|kv| (Ident::from_str(kv.0), Default::default()))
-                                       .collect();
+        let mut crate_loader = CrateLoader::new(session, metadata_loader, crate_name);
+        let mut extern_prelude: FxHashMap<Ident, ExternPreludeEntry<'_>> = FxHashMap::default();
+        for (extern_key, extern_entry) in session.opts.externs.iter() {
+            if !extern_entry.add_prelude {
+                continue;
+            }
+            let extern_key = Ident::from_str(extern_key);
+            if let Some(actual_crate_name) = extern_entry.alias() {
+                let crate_name_ident = Ident::from_str(actual_crate_name);
+                let crate_id =
+                    crate_loader.process_path_extern(crate_name_ident.name, crate_name_ident.span);
+                let def_id = DefId { krate: crate_id, index: CRATE_DEF_INDEX };
+                let crate_name = crate_loader.cstore().crate_name_untracked(def_id.krate);
+                let kind = ModuleKind::Def(DefKind::Mod, def_id, crate_name);
+                let crate_root = arenas.alloc_module(ModuleData::new(
+                    None, kind, def_id, ExpnId::root(), DUMMY_SP
+                ));
+                let binding = (crate_root, ty::Visibility::Public, DUMMY_SP, ExpnId::root())
+                    .to_name_binding(arenas);
+                let ep_entry = ExternPreludeEntry {
+                    extern_crate_item: Some(binding),
+                    introduced_by_item: false,
+                };
+                extern_prelude.insert(extern_key, ep_entry);
+            } else {
+                extern_prelude.insert(extern_key, Default::default());
+            }
+        }
 
         if !attr::contains_name(&krate.attrs, sym::no_core) {
             extern_prelude.insert(Ident::with_dummy_span(sym::core), Default::default());
@@ -1201,7 +1226,7 @@ impl<'a> Resolver<'a> {
                 vis: ty::Visibility::Public,
             }),
 
-            crate_loader: CrateLoader::new(session, metadata_loader, crate_name),
+            crate_loader,
             macro_names: FxHashSet::default(),
             builtin_macros: Default::default(),
             macro_use_prelude: FxHashMap::default(),

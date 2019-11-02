@@ -299,10 +299,31 @@ impl OutputTypes {
 #[derive(Clone)]
 pub struct Externs(BTreeMap<String, ExternEntry>);
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 pub struct ExternEntry {
-    pub locations: BTreeSet<Option<String>>,
-    pub is_private_dep: bool
+    pub location: ExternLocation,
+    pub is_private_dep: bool,
+    pub add_prelude: bool,
+}
+
+#[derive(Clone, Debug)]
+pub enum ExternLocation {
+    /// Add the extern entry to the extern prelude.
+    ///
+    /// Added via `--extern prelude_name`
+    ExternPrelude,
+    /// Add the extern entry to the extern prelude aliased to a different
+    /// crate.
+    ///
+    /// Added via `--extern prelude_name=crate_name`
+    ExternPreludeAlias(String),
+    /// The locations where this extern entry may be found.
+    ///
+    /// The `CrateLoader` is responsible for loading these and figuring out
+    /// which one to use.
+    ///
+    /// Added via `--extern prelude_name=some_file.rlib`
+    Files(BTreeSet<String>),
 }
 
 impl Externs {
@@ -319,6 +340,25 @@ impl Externs {
     }
 }
 
+impl ExternEntry {
+    fn new(location: ExternLocation) -> ExternEntry {
+        ExternEntry { location, is_private_dep: false, add_prelude: true }
+    }
+
+    pub fn files(&self) -> Option<impl Iterator<Item = &String>> {
+        match &self.location {
+            ExternLocation::Files(set) => Some(set.iter()),
+            _ => None,
+        }
+    }
+
+    pub fn alias(&self) -> Option<&String> {
+        match &self.location {
+            ExternLocation::ExternPreludeAlias(s) => Some(s),
+            _ => None,
+        }
+    }
+}
 
 macro_rules! hash_option {
     ($opt_name:ident, $opt_expr:expr, $sub_hashes:expr, [UNTRACKED]) => ({});
@@ -1802,12 +1842,6 @@ pub fn rustc_optgroups() -> Vec<RustcOptGroup> {
             "Specify where an external rust library is located",
             "NAME=PATH",
         ),
-        opt::multi_s(
-            "",
-            "extern-private",
-            "Specify where an extern rust library is located, marking it as a private dependency",
-            "NAME=PATH",
-        ),
         opt::opt_s("", "sysroot", "Override the system root", "PATH"),
         opt::multi("Z", "", "Set internal debugging options", "FLAG"),
         opt::opt_s(
@@ -2366,51 +2400,130 @@ fn parse_borrowck_mode(dopts: &DebuggingOptions, error_format: ErrorOutputType) 
     }
 }
 
-fn parse_externs(
+pub fn parse_externs(
     matches: &getopts::Matches,
     debugging_opts: &DebuggingOptions,
     error_format: ErrorOutputType,
-    is_unstable_enabled: bool,
 ) -> Externs {
-    if matches.opt_present("extern-private") && !debugging_opts.unstable_options {
-        early_error(
-            ErrorOutputType::default(),
-            "'--extern-private' is unstable and only \
-            available for nightly builds of rustc."
-        )
-    }
-
-    // We start out with a `Vec<(Option<String>, bool)>>`,
-    // and later convert it into a `BTreeSet<(Option<String>, bool)>`
-    // This allows to modify entries in-place to set their correct
-    // 'public' value.
+    let is_unstable_enabled = debugging_opts.unstable_options;
     let mut externs: BTreeMap<String, ExternEntry> = BTreeMap::new();
-    for (arg, private) in matches.opt_strs("extern").into_iter().map(|v| (v, false))
-        .chain(matches.opt_strs("extern-private").into_iter().map(|v| (v, true))) {
-
+    for arg in matches.opt_strs("extern") {
         let mut parts = arg.splitn(2, '=');
-        let name = parts.next().unwrap_or_else(||
-            early_error(error_format, "--extern value must not be empty"));
-        let location = parts.next().map(|s| s.to_string());
-        if location.is_none() && !is_unstable_enabled {
-            early_error(
-                error_format,
-                "the `-Z unstable-options` flag must also be passed to \
-                 enable `--extern crate_name` without `=path`",
-            );
+        let name = parts
+            .next()
+            .unwrap_or_else(|| early_error(error_format, "--extern value must not be empty"));
+        let path = parts.next().map(|s| s.to_string());
+
+        let mut name_parts = name.splitn(2, ':');
+        let first_part = name_parts.next();
+        let second_part = name_parts.next();
+        let (options, name) = match (first_part, second_part) {
+            (Some(opts), Some(name)) => (Some(opts), name),
+            (Some(name), None) => (None, name),
+            (None, None) => early_error(error_format, "--extern name must not be empty"),
+            _ => unreachable!(),
         };
 
-        let entry = externs
-            .entry(name.to_owned())
-            .or_default();
+        let entry = externs.entry(name.to_owned());
 
+        use std::collections::btree_map::Entry;
 
-        entry.locations.insert(location.clone());
+        let entry = if let Some(path) = path {
+            // This really should be is_identifier, but I can't find one handy anywhere.
+            if path.find(&['.', '/', '\\'][..]).is_some() {
+                // --extern prelude_name=some_file.rlib
+                match entry {
+                    Entry::Vacant(vacant) => {
+                        let mut files = BTreeSet::new();
+                        files.insert(path);
+                        vacant.insert(ExternEntry::new(ExternLocation::Files(files)))
+                    }
+                    Entry::Occupied(occupied) => {
+                        let ext_ent = occupied.into_mut();
+                        match ext_ent {
+                            ExternEntry { location: ExternLocation::Files(files), .. } => {
+                                files.insert(path);
+                            }
+                            _ => early_error(
+                                error_format,
+                                "--extern with `=path` cannot be specified with \
+                                 --extern without `=path`",
+                            ),
+                        }
+                        ext_ent
+                    }
+                }
+            } else {
+                // --extern prelude_name=crate_name
+                if !is_unstable_enabled {
+                    early_error(
+                        error_format,
+                        "the `-Z unstable-options` flag must also be passed to \
+                         enable `--extern alias=crate_name`",
+                    );
+                }
+                match entry {
+                    Entry::Vacant(vacant) => {
+                        vacant.insert(ExternEntry::new(ExternLocation::ExternPreludeAlias(path)))
+                    }
+                    Entry::Occupied(_) => {
+                        early_error(error_format, "aliased --extern can only be specified once")
+                    }
+                }
+            }
+        } else {
+            // --extern prelude_name
+            if !is_unstable_enabled {
+                early_error(
+                    error_format,
+                    "the `-Z unstable-options` flag must also be passed to \
+                     enable `--extern crate_name` without `=path`",
+                );
+            }
+            match entry {
+                Entry::Vacant(vacant) => {
+                    vacant.insert(ExternEntry::new(ExternLocation::ExternPrelude))
+                }
+                Entry::Occupied(_) => {
+                    early_error(error_format, "--extern without `=path` can only be specified once")
+                }
+            }
+        };
 
-        // Crates start out being not private,
-        // and go to being private if we see an '--extern-private'
-        // flag
-        entry.is_private_dep |= private;
+        let mut is_private_dep = false;
+        let mut add_prelude = true;
+        if let Some(opts) = options {
+            if !is_unstable_enabled {
+                early_error(
+                    error_format,
+                    "the `-Z unstable-options` flag must also be passed to \
+                     enable `--extern options",
+                );
+            }
+            for opt in opts.split(',') {
+                match opt {
+                    "priv" => is_private_dep = true,
+                    "noprelude" => {
+                        if let ExternLocation::Files(_) = &entry.location {
+                            add_prelude = false;
+                        } else {
+                            early_error(
+                                error_format,
+                                "the `noprelude` --extern option requires a file path",
+                            );
+                        }
+                    }
+                    _ => early_error(error_format, &format!("unknown --extern option `{}`", opt)),
+                }
+            }
+        }
+
+        // Crates start out being not private, and go to being private `priv`
+        // is specified.
+        entry.is_private_dep |= is_private_dep;
+        // Crates start out adding to the extern prelude, but are removed if
+        // `noprelude` is specified.
+        entry.add_prelude &= add_prelude;
     }
     Externs(externs)
 }
@@ -2521,7 +2634,7 @@ pub fn build_session_options(matches: &getopts::Matches) -> Options {
         );
     }
 
-    let externs = parse_externs(matches, &debugging_opts, error_format, is_unstable_enabled);
+    let externs = parse_externs(matches, &debugging_opts, error_format);
 
     let crate_name = matches.opt_str("crate-name");
 
