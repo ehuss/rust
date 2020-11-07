@@ -7,12 +7,12 @@ set -e
 rustc --version
 lldb --version
 
-./configure --set rust.jemalloc --set llvm.ninja=false --set llvm.targets=X86 --set llvm.experimental-targets=""
+./configure --set rust.jemalloc --set llvm.ninja=false
 env
 for i in {1..100}
 do
     echo "run $i"
-    ./x.py test --stage=1 --keep-stage=0 --keep-stage=1 src/test/debuginfo/pretty-std-collections.rs --test-args=--ignored
+    ./x.py test --stage=1 src/test/debuginfo/pretty-std-collections.rs --test-args=--ignored
 done
 
 # SRCROOT=$PWD

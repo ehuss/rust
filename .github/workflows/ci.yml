@@ -33,9 +33,9 @@ jobs:
     - name: cache
       uses: actions/cache@v2
       with:
-        key: cache1-purged
-        restore-keys: |
-          cache1-purged
+        key: cache2-purged
+        # restore-keys: |
+        #   cache2-purged
         path: build/x86_64-apple-darwin
     - name: Hardware info
       run: |
