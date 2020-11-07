@@ -35,10 +35,15 @@ jobs:
       with:
         key: cache1
         path: build/x86_64-apple-darwin
-    - name: collect CPU statistics
-      run: src/ci/scripts/collect-cpu-stats.sh
+    - name: Hardware info
+      run: |
+        system_profiler SPHardwareDataType || true
+        sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
     - name: install clang
       run: src/ci/scripts/install-clang.sh
+    - run: rm -rf build/x86_64-apple-darwin/stage0-tools build/x86_64-apple-darwin/stage1
     - run: ./pretty-std-collections.sh
+    - name: Purge
+      run: sudo /usr/sbin/purge
