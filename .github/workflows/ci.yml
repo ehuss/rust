@@ -33,7 +33,10 @@ jobs:
     - name: cache
       uses: actions/cache@v2
       with:
-        key: cache1
+        key: cache1-purged
+        restore-keys: |
+          cache1
+          cache1-purged
         path: build/x86_64-apple-darwin
     - name: Hardware info
       run: |
@@ -43,6 +46,11 @@ jobs:
       run: src/ci/scripts/checkout-submodules.sh
     - name: install clang
       run: src/ci/scripts/install-clang.sh
-    - run: ./pretty-std-collections.sh
+    - name: Flush and Build
+      run: |
+        rm -rf build/x86_64-apple-darwin/stage0-tools build/x86_64-apple-darwin/stage1
+        ./configure --set rust.jemalloc --set llvm.ninja=false --set llvm.targets=X86 --set llvm.experimental-targets=""
+        ./x.py test --stage=1 src/test/debuginfo/box.rs
+    # - run: ./pretty-std-collections.sh
     - name: Purge
       run: sudo /usr/sbin/purge
