@@ -7,7 +7,8 @@ set -e
 rustc --version
 lldb --version
 
-./configure --set rust.jemalloc --set llvm.ninja=false
+./configure --set rust.jemalloc --set llvm.ninja=false --set llvm.targets=X86 --set llvm.experimental-targets=""
+env
 for i in {1..100}
 do
     echo "run $i"

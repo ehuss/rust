@@ -41,8 +41,4 @@ jobs:
       run: src/ci/scripts/checkout-submodules.sh
     - name: install clang
       run: src/ci/scripts/install-clang.sh
-    # - run: ./pretty-std-collections.sh
-    - run: |
-        ./configure --set rust.jemalloc --set llvm.ninja=false --set llvm.targets=X86 --set llvm.experimental-targets=""
-        env
-        ./x.py test --stage=1 src/test/debuginfo/box.rs
+    - run: ./pretty-std-collections.sh
