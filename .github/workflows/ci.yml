@@ -36,8 +36,6 @@ jobs:
         sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
-    - name: install clang
-      run: src/ci/scripts/install-clang.sh
     - run: ./pretty-std-collections.sh
 
   test2:
@@ -58,8 +56,6 @@ jobs:
         sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
-    - name: install clang
-      run: src/ci/scripts/install-clang.sh
     - run: ./pretty-std-collections.sh
 
   test3:
@@ -80,8 +76,6 @@ jobs:
         sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
-    - name: install clang
-      run: src/ci/scripts/install-clang.sh
     - run: ./pretty-std-collections.sh
 
   test4:
@@ -102,6 +96,4 @@ jobs:
         sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
-    - name: install clang
-      run: src/ci/scripts/install-clang.sh
     - run: ./pretty-std-collections.sh
