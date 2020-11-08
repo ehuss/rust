@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+# set -e
 
 rustup toolchain install nightly --profile=minimal
 rustup default nightly
@@ -10,10 +10,10 @@ SRCROOT=$PWD
 mkdir -p build/test
 cd src/tools/compiletest
 SYSROOT=$(rustc --print=sysroot)
+env
 
-for i in {1..100}
-do
-    echo "run $i"
+function runtest()
+{
     cargo run -- \
         --compile-lib-path $SYSROOT/lib \
         --run-lib-path $SYSROOT/lib/rustlib/x86_64-apple-darwin/lib \
@@ -36,4 +36,17 @@ do
         --android-cross-path "" \
         --ignored \
         pretty-std-collections.rs
-done
+}
+
+failed=0
+if ! runtest
+then
+    echo "failed first"
+    failed=1
+fi
+if ! runtest
+then
+    echo "failed second"
+    failed=1
+fi
+exit $failed

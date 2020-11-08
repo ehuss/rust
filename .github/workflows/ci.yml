@@ -18,7 +18,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test:
+  test1:
     runs-on: macos-latest
     env:
       RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
@@ -30,8 +30,76 @@ jobs:
     - uses: actions/checkout@master
       with:
         fetch-depth: 2
-    - name: collect CPU statistics
-      run: src/ci/scripts/collect-cpu-stats.sh
+    - name: Hardware info
+      run: |
+        system_profiler SPHardwareDataType || true
+        sysctl hw || true
+    - name: checkout submodules
+      run: src/ci/scripts/checkout-submodules.sh
+    - name: install clang
+      run: src/ci/scripts/install-clang.sh
+    - run: ./pretty-std-collections.sh
+
+  test2:
+    runs-on: macos-latest
+    env:
+      RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.8
+      MACOSX_STD_DEPLOYMENT_TARGET: 10.7
+      NO_LLVM_ASSERTIONS: 1
+      NO_DEBUG_ASSERTIONS: 1
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 2
+    - name: Hardware info
+      run: |
+        system_profiler SPHardwareDataType || true
+        sysctl hw || true
+    - name: checkout submodules
+      run: src/ci/scripts/checkout-submodules.sh
+    - name: install clang
+      run: src/ci/scripts/install-clang.sh
+    - run: ./pretty-std-collections.sh
+
+  test3:
+    runs-on: macos-latest
+    env:
+      RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.8
+      MACOSX_STD_DEPLOYMENT_TARGET: 10.7
+      NO_LLVM_ASSERTIONS: 1
+      NO_DEBUG_ASSERTIONS: 1
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 2
+    - name: Hardware info
+      run: |
+        system_profiler SPHardwareDataType || true
+        sysctl hw || true
+    - name: checkout submodules
+      run: src/ci/scripts/checkout-submodules.sh
+    - name: install clang
+      run: src/ci/scripts/install-clang.sh
+    - run: ./pretty-std-collections.sh
+
+  test4:
+    runs-on: macos-latest
+    env:
+      RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.8
+      MACOSX_STD_DEPLOYMENT_TARGET: 10.7
+      NO_LLVM_ASSERTIONS: 1
+      NO_DEBUG_ASSERTIONS: 1
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 2
+    - name: Hardware info
+      run: |
+        system_profiler SPHardwareDataType || true
+        sysctl hw || true
     - name: checkout submodules
       run: src/ci/scripts/checkout-submodules.sh
     - name: install clang
