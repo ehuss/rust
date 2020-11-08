@@ -39,14 +39,13 @@ function runtest()
 }
 
 failed=0
-if ! runtest
-then
-    echo "failed first"
-    failed=1
-fi
-if ! runtest
-then
-    echo "failed second"
-    failed=1
-fi
+for i in {1..10}
+do
+    echo run $i
+    if ! runtest
+    then
+        echo "failed $i"
+        failed=1
+    fi
+done
 exit $failed
