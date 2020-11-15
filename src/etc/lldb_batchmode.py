@@ -197,6 +197,7 @@ if not target:
           str(target_error) + ". Aborting.", file=sys.stderr)
     sys.exit(1)
 
+u8_type = target.GetBasicType(lldb.eBasicTypeUnsignedChar)
 
 # Register the breakpoint callback for every breakpoint
 start_breakpoint_listener(target)
