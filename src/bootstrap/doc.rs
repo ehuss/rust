@@ -434,6 +434,7 @@ impl Step for Std {
             cargo
                 .arg("-p")
                 .arg(package)
+                .arg("-Zskip-rustdoc-fingerprint")
                 .arg("--")
                 .arg("--markdown-css")
                 .arg("rust.css")
@@ -550,6 +551,7 @@ impl Step for Rustc {
         cargo.rustdocflag("-Zunstable-options");
         cargo.rustdocflag("-Znormalize-docs");
         compile::rustc_cargo(builder, &mut cargo, target);
+        cargo.arg("-Zskip-rustdoc-fingerprint");
 
         // Only include compiler crates, no dependencies of those, such as `libc`.
         cargo.arg("--no-deps");
@@ -641,6 +643,7 @@ impl Step for Rustdoc {
             &[],
         );
 
+        cargo.arg("-Zskip-rustdoc-fingerprint");
         // Only include compiler crates, no dependencies of those, such as `libc`.
         cargo.arg("--no-deps");
         cargo.arg("-p").arg("rustdoc");
