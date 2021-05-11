@@ -23,6 +23,16 @@ echo "Searching for toolstate changes between $BASE_COMMIT and $(git rev-parse H
 
 git diff --name-only "$BASE_COMMIT"
 
+echo
+echo =======================================
+echo
+
+git diff --name-only "$BASE_COMMIT" | grep --quiet src/tools/'\(clippy\|rustfmt\)'
+
+echo
+echo =======================================
+echo
+
 if git diff "$BASE_COMMIT" | grep --quiet "^index .* 160000"; then
     # Submodules pseudo-files inside git have the 160000 permissions, so when
     # those files are present in the diff a submodule was updated.
