@@ -13,10 +13,15 @@ if [[ -z "${CI_ONLY_WHEN_SUBMODULES_CHANGED+x}" ]]; then
     exit 0
 fi
 
+echo $GITHUB_REPOSITORY
+echo base_ref=$GITHUB_BASE_REF
+
 git fetch "https://github.com/$GITHUB_REPOSITORY" "$GITHUB_BASE_REF"
 BASE_COMMIT="$(git merge-base FETCH_HEAD HEAD)"
 
 echo "Searching for toolstate changes between $BASE_COMMIT and $(git rev-parse HEAD)"
+
+git diff --name-only "$BASE_COMMIT"
 
 if git diff "$BASE_COMMIT" | grep --quiet "^index .* 160000"; then
     # Submodules pseudo-files inside git have the 160000 permissions, so when
