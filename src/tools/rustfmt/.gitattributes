@@ -1,0 +1,2 @@
+# Stop git from showing CRLF tests as modified
+* text=auto eol=Unset
