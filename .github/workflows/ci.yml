@@ -49,7 +49,7 @@ jobs:
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
               SCRIPT: make ci-subset-1
-            os: windows-2022
+            os: windows-2019
           # - name: x86_64-msvc-2
           #   env:
           #     RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
