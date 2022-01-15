@@ -47,7 +47,7 @@ jobs:
         include:
           - name: x86_64-msvc-1
             env:
-              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
+              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler --set llvm.targets=X86"
               SCRIPT: make ci-subset-1
             os: windows-2022
           # - name: x86_64-msvc-2
