@@ -45,11 +45,11 @@ jobs:
     strategy:
       matrix:
         include:
-          # - name: x86_64-msvc-1
-          #   env:
-          #     RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
-          #     SCRIPT: make ci-subset-1
-          #   os: windows-2022
+          - name: x86_64-msvc-1
+            env:
+              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
+              SCRIPT: make ci-subset-1
+            os: windows-2022
           # - name: x86_64-msvc-2
           #   env:
           #     RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
@@ -88,12 +88,12 @@ jobs:
           #     SCRIPT: make ci-mingw-subset-2
           #     CUSTOM_MINGW: 1
           #   os: windows-2022
-          - name: x86_64-mingw-1
-            env:
-              SCRIPT: make ci-mingw-subset-1
-              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-gnu --enable-profiler"
-              CUSTOM_MINGW: 1
-            os: windows-2022
+          # - name: x86_64-mingw-1
+          #   env:
+          #     SCRIPT: make ci-mingw-subset-1
+          #     RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-gnu --enable-profiler"
+          #     CUSTOM_MINGW: 1
+          #   os: windows-2022
           # - name: x86_64-mingw-2
           #   env:
           #     SCRIPT: make ci-mingw-subset-2
