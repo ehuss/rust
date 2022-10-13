@@ -18,10 +18,7 @@ name: CI
 "on":
   push:
     branches:
-      - auto
-      - try
-      - try-perf
-      - master
+      - "**"
   pull_request:
     branches:
       - "**"
@@ -40,20 +37,20 @@ jobs:
       SCCACHE_BUCKET: rust-lang-ci-sccache2
       TOOLSTATE_REPO: "https://github.com/rust-lang-nursery/rust-toolstate"
       CACHE_DOMAIN: ci-caches.rust-lang.org
-    if: "github.event_name == 'pull_request'"
     strategy:
       matrix:
         include:
-          - name: mingw-check
-            os: ubuntu-20.04-xl
-            env: {}
-          - name: x86_64-gnu-llvm-13
-            os: ubuntu-20.04-xl
-            env: {}
-          - name: x86_64-gnu-tools
+          - name: dist-x86_64-apple
             env:
-              CI_ONLY_WHEN_SUBMODULES_CHANGED: 1
-            os: ubuntu-20.04-xl
+              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
+              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              MACOSX_DEPLOYMENT_TARGET: 10.7
+              NO_LLVM_ASSERTIONS: 1
+              NO_DEBUG_ASSERTIONS: 1
+              NO_OVERFLOW_CHECKS: 1
+              DIST_REQUIRE_ALL_TOOLS: 1
+            os: macos-12
     timeout-minutes: 600
     runs-on: "${{ matrix.os }}"
     steps:
@@ -76,14 +73,6 @@ jobs:
       - name: decide whether to skip this job
         run: src/ci/scripts/should-skip-this.sh
         if: success() && !env.SKIP_JOB
-      - name: ensure the channel matches the target branch
-        run: src/ci/scripts/verify-channel.sh
-        if: success() && !env.SKIP_JOB
-      - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.github_token }}"
-        if: "success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'"
       - name: collect CPU statistics
         run: src/ci/scripts/collect-cpu-stats.sh
         if: success() && !env.SKIP_JOB
@@ -295,73 +284,6 @@ jobs:
             env:
               DEPLOY_TOOLSTATES_JSON: toolstates-linux.json
             os: ubuntu-20.04-xl
-          - name: dist-x86_64-apple
-            env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              MACOSX_DEPLOYMENT_TARGET: 10.7
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-              DIST_REQUIRE_ALL_TOOLS: 1
-            os: macos-latest
-          - name: dist-apple-various
-            env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host='' --target=aarch64-apple-ios,x86_64-apple-ios,aarch64-apple-ios-sim"
-              RUST_CONFIGURE_ARGS: "--enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              MACOSX_DEPLOYMENT_TARGET: 10.7
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-            os: macos-latest
-          - name: dist-x86_64-apple-alt
-            env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths"
-              RUST_CONFIGURE_ARGS: "--enable-extended --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              MACOSX_DEPLOYMENT_TARGET: 10.7
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-            os: macos-latest
-          - name: x86_64-apple-1
-            env:
-              SCRIPT: "./x.py --stage 2 test --exclude src/test/ui --exclude src/test/rustdoc --exclude src/test/run-make-fulldeps"
-              RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              MACOSX_DEPLOYMENT_TARGET: 10.8
-              MACOSX_STD_DEPLOYMENT_TARGET: 10.7
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-            os: macos-latest
-          - name: x86_64-apple-2
-            env:
-              SCRIPT: "./x.py --stage 2 test src/test/ui src/test/rustdoc src/test/run-make-fulldeps"
-              RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              MACOSX_DEPLOYMENT_TARGET: 10.8
-              MACOSX_STD_DEPLOYMENT_TARGET: 10.7
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-            os: macos-latest
-          - name: dist-aarch64-apple
-            env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --stage 2"
-              RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --host=aarch64-apple-darwin --target=aarch64-apple-darwin --enable-full-tools --enable-sanitizers --enable-profiler --disable-docs --set rust.jemalloc --set llvm.ninja=false"
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
-              USE_XCODE_CLANG: 1
-              MACOSX_DEPLOYMENT_TARGET: 11.0
-              MACOSX_STD_DEPLOYMENT_TARGET: 11.0
-              NO_LLVM_ASSERTIONS: 1
-              NO_DEBUG_ASSERTIONS: 1
-              NO_OVERFLOW_CHECKS: 1
-              DIST_REQUIRE_ALL_TOOLS: 1
-              JEMALLOC_SYS_WITH_LG_PAGE: 14
-            os: macos-latest
           - name: x86_64-msvc-1
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
@@ -483,14 +405,6 @@ jobs:
       - name: decide whether to skip this job
         run: src/ci/scripts/should-skip-this.sh
         if: success() && !env.SKIP_JOB
-      - name: ensure the channel matches the target branch
-        run: src/ci/scripts/verify-channel.sh
-        if: success() && !env.SKIP_JOB
-      - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.github_token }}"
-        if: "success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'"
       - name: collect CPU statistics
         run: src/ci/scripts/collect-cpu-stats.sh
         if: success() && !env.SKIP_JOB
@@ -595,14 +509,6 @@ jobs:
       - name: decide whether to skip this job
         run: src/ci/scripts/should-skip-this.sh
         if: success() && !env.SKIP_JOB
-      - name: ensure the channel matches the target branch
-        run: src/ci/scripts/verify-channel.sh
-        if: success() && !env.SKIP_JOB
-      - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.github_token }}"
-        if: "success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'"
       - name: collect CPU statistics
         run: src/ci/scripts/collect-cpu-stats.sh
         if: success() && !env.SKIP_JOB
