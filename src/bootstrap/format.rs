@@ -74,28 +74,24 @@ fn update_rustfmt_version(build: &Builder<'_>) {
     t!(std::fs::write(stamp_file, version))
 }
 
-/// Returns the files modified between the `merge-base` of HEAD and
+/// Returns the Rust files modified between the `merge-base` of HEAD and
 /// rust-lang/master and what is now on the disk.
 ///
 /// Returns `None` if all files should be formatted.
-fn get_modified_files(build: &Builder<'_>) -> Option<Vec<String>> {
-    let Ok(remote) = get_rust_lang_rust_remote() else {return None;};
+fn get_modified_rs_files(build: &Builder<'_>) -> Option<Vec<String>> {
+    let Ok(remote) = get_rust_lang_rust_remote() else { return None; };
     if !verify_rustfmt_version(build) {
         return None;
     }
+
+    let merge_base =
+        output(build.config.git().arg("merge-base").arg(&format!("{remote}/master")).arg("HEAD"));
     Some(
-        output(
-            build
-                .config
-                .git()
-                .arg("diff-index")
-                .arg("--name-only")
-                .arg("--merge-base")
-                .arg(&format!("{remote}/master")),
-        )
-        .lines()
-        .map(|s| s.trim().to_owned())
-        .collect(),
+        output(build.config.git().arg("diff-index").arg("--name-only").arg(merge_base.trim()))
+            .lines()
+            .map(|s| s.trim().to_owned())
+            .filter(|f| Path::new(f).extension().map_or(false, |ext| ext == "rs"))
+            .collect(),
     )
 }
 
@@ -195,7 +191,7 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
                 ignore_fmt.add(&format!("!/{}", untracked_path)).expect(&untracked_path);
             }
             if !check && paths.is_empty() {
-                if let Some(files) = get_modified_files(build) {
+                if let Some(files) = get_modified_rs_files(build) {
                     for file in files {
                         println!("formatting modified file {file}");
                         ignore_fmt.add(&format!("/{file}")).expect(&file);

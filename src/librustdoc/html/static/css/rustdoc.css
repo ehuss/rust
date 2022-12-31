@@ -355,10 +355,6 @@ img {
 	max-width: 100%;
 }
 
-.source .content {
-	overflow: visible;
-}
-
 .sub-logo-container, .logo-container {
 	/* zero text boxes so that computed line height = image height exactly */
 	line-height: 0;
@@ -1317,15 +1313,11 @@ a.test-arrow:hover {
 	-webkit-appearance: none;
 	opacity: 1;
 }
+
 #settings-menu, #help-button {
 	margin-left: 4px;
 	display: flex;
 }
-
-#settings-menu > a, #help-button > a, #copy-path {
-	width: 33px;
-}
-
 #settings-menu > a, #help-button > a {
 	display: flex;
 	align-items: center;
@@ -1337,6 +1329,7 @@ a.test-arrow:hover {
 	/* Rare exception to specifying font sizes in rem. Since this is acting
 	   as an icon, it's okay to specify their sizes in pixels. */
 	font-size: 20px;
+	width: 33px;
 }
 
 #settings-menu > a:hover, #settings-menu > a:focus,
@@ -1352,6 +1345,7 @@ a.test-arrow:hover {
 	padding: 0;
 	padding-left: 2px;
 	border: 0;
+	width: 33px;
 }
 #copy-path > img {
 	filter: var(--copy-path-img-filter);
@@ -1960,6 +1954,14 @@ in storage.js
 }
 .scraped-example .example-wrap .rust span.highlight.focus {
 	background: var(--scrape-example-code-line-highlight-focus);
+}
+.scraped-example-list .scrape-help {
+	border-color: var(--scrape-example-help-border-color);
+	color: var(--scrape-example-help-color);
+}
+.scraped-example-list .scrape-help:hover {
+	border-color: var(--scrape-example-help-hover-border-color);
+	color: var(--scrape-example-help-hover-color);
 }
 
 .more-examples-toggle {
