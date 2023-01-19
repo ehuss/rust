@@ -175,7 +175,7 @@ exclude_labels = [
     "T-*",
 ]
 
-[autolabel."A-bootstrap"]
+[autolabel."T-bootstrap"]
 trigger_files = [
     "x.py",
     "x",
