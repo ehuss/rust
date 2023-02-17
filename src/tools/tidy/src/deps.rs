@@ -33,25 +33,30 @@ const LICENSES: &[&str] = &[
 const EXCEPTIONS: &[(&str, &str)] = &[
     ("ar_archive_writer", "Apache-2.0 WITH LLVM-exception"), // rustc
     ("mdbook", "MPL-2.0"),                                   // mdbook
-    ("openssl", "Apache-2.0"),                               // cargo, mdbook
     ("colored", "MPL-2.0"),                                  // rustfmt
     ("ryu", "Apache-2.0 OR BSL-1.0"),                        // cargo/... (because of serde)
-    ("bytesize", "Apache-2.0"),                              // cargo
-    ("im-rc", "MPL-2.0+"),                                   // cargo
-    ("sized-chunks", "MPL-2.0+"),                            // cargo via im-rc
-    ("bitmaps", "MPL-2.0+"),                                 // cargo via im-rc
-    ("fiat-crypto", "MIT OR Apache-2.0 OR BSD-1-Clause"),    // cargo via pasetors
-    ("subtle", "BSD-3-Clause"),                              // cargo via pasetors
     ("instant", "BSD-3-Clause"), // rustc_driver/tracing-subscriber/parking_lot
     ("snap", "BSD-3-Clause"),    // rustc
     ("fluent-langneg", "Apache-2.0"), // rustc (fluent translations)
     ("self_cell", "Apache-2.0"), // rustc (fluent translations)
     // FIXME: this dependency violates the documentation comment above:
     ("fortanix-sgx-abi", "MPL-2.0"), // libstd but only for `sgx` target
-    ("dunce", "CC0-1.0"),            // cargo (dev dependency)
-    ("similar", "Apache-2.0"),       // cargo (dev dependency)
-    ("normalize-line-endings", "Apache-2.0"), // cargo (dev dependency)
     ("dissimilar", "Apache-2.0"),    // rustdoc, rustc_lexer (few tests) via expect-test, (dev deps)
+];
+
+const EXCEPTIONS_CARGO: &[(&str, &str)] = &[
+    ("openssl", "Apache-2.0"),                            // cargo, mdbook
+    ("ryu", "Apache-2.0 OR BSL-1.0"),                     // cargo/... (because of serde)
+    ("bytesize", "Apache-2.0"),                           // cargo
+    ("im-rc", "MPL-2.0+"),                                // cargo
+    ("sized-chunks", "MPL-2.0+"),                         // cargo via im-rc
+    ("bitmaps", "MPL-2.0+"),                              // cargo via im-rc
+    ("fiat-crypto", "MIT OR Apache-2.0 OR BSD-1-Clause"), // cargo via pasetors
+    ("subtle", "BSD-3-Clause"),                           // cargo via pasetors
+    ("dunce", "CC0-1.0 OR MIT-0"),                        // cargo (dev dependency)
+    ("similar", "Apache-2.0"),                            // cargo (dev dependency)
+    ("normalize-line-endings", "Apache-2.0"),             // cargo (dev dependency)
+    ("instant", "BSD-3-Clause"),
 ];
 
 const EXCEPTIONS_CRANELIFT: &[(&str, &str)] = &[
@@ -152,7 +157,6 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "lazy_static",
     "libc",
     "libloading",
-    "libz-sys",
     "litemap",
     "lock_api",
     "log",
@@ -173,7 +177,6 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "perf-event-open-sys",
     "petgraph",
     "pin-project-lite",
-    "pkg-config",
     "polonius-engine",
     "ppv-lite86",
     "proc-macro-hack",
@@ -215,7 +218,6 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "stable_deref_trait",
     "stacker",
     "static_assertions",
-    "subtle", // dependency of cargo (via pasetors)
     "syn",
     "synstructure",
     "tempfile",
@@ -254,7 +256,6 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "unicode-security",
     "unicode-width",
     "unicode-xid",
-    "vcpkg",
     "valuable",
     "version_check",
     "wasi",
@@ -272,6 +273,214 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "zerofrom-derive",
     "zerovec",
     "zerovec-derive",
+];
+
+const PERMITTED_CARGO_DEPENDENCIES: &[&str] = &[
+    "aho-corasick",
+    "anyhow",
+    "arrayvec",
+    "atty",
+    "autocfg",
+    "base16ct",
+    "base64",
+    "base64ct",
+    "bitflags",
+    "bitmaps",
+    "block-buffer",
+    "bstr",
+    "bytesize",
+    "cc",
+    "cfg-if",
+    "clap",
+    "clap_lex",
+    "commoncrypto",
+    "commoncrypto",
+    "commoncrypto-sys",
+    "concolor",
+    "concolor-query",
+    "const-oid",
+    "content_inspector",
+    "core-foundation",
+    "core-foundation-sys",
+    "cpufeatures",
+    "crc32fast",
+    "crypto-bigint",
+    "crypto-common",
+    "crypto-hash",
+    "ct-codecs",
+    "curl",
+    "curl-sys",
+    "der",
+    "digest",
+    "dunce",
+    "ecdsa",
+    "ed25519-compact",
+    "ed25519-compact",
+    "either",
+    "elliptic-curve",
+    "elliptic-curve",
+    "env_logger",
+    "env_logger",
+    "fastrand",
+    "ff",
+    "fiat-crypto",
+    "filetime",
+    "flate2",
+    "fnv",
+    "foreign-types",
+    "foreign-types-shared",
+    "form_urlencoded",
+    "fwdansi",
+    "generic-array",
+    "getrandom",
+    "git2",
+    "git2",
+    "git2-curl",
+    "glob",
+    "globset",
+    "group",
+    "group",
+    "hashbrown",
+    "hermit-abi",
+    "hex",
+    "hex",
+    "hex",
+    "hkdf",
+    "hmac",
+    "home",
+    "http-auth",
+    "humantime",
+    "humantime",
+    "idna",
+    "ignore",
+    "im-rc",
+    "indexmap",
+    "io-lifetimes",
+    "is-terminal",
+    "itertools",
+    "itoa",
+    "jobserver",
+    "lazy_static",
+    "lazycell",
+    "libc",
+    "libgit2-sys",
+    "libgit2-sys",
+    "libnghttp2-sys",
+    "libssh2-sys",
+    "libz-sys",
+    "linux-raw-sys",
+    "log",
+    "memchr",
+    "miow",
+    "nom8",
+    "normalize-line-endings",
+    "num-traits",
+    "once_cell",
+    "opener",
+    "openssl",
+    "openssl-macros",
+    "openssl-probe",
+    "openssl-probe",
+    "openssl-src",
+    "openssl-sys",
+    "openssl-sys",
+    "ordered-float",
+    "orion",
+    "os_info",
+    "os_info",
+    "os_str_bytes",
+    "p384",
+    "pasetors",
+    "pasetors",
+    "pathdiff",
+    "pem-rfc7468",
+    "percent-encoding",
+    "pkcs8",
+    "pkg-config",
+    "pretty_env_logger",
+    "proc-macro2",
+    "quick-error",
+    "quote",
+    "rand_core",
+    "rand_xoshiro",
+    "redox_syscall",
+    "regex",
+    "regex-automata",
+    "regex-syntax",
+    "remove_dir_all",
+    "rfc6979",
+    "rfc6979",
+    "rustfix",
+    "rustix",
+    "ryu",
+    "same-file",
+    "schannel",
+    "schannel",
+    "sec1",
+    "semver",
+    "serde",
+    "serde-value",
+    "serde_derive",
+    "serde_ignored",
+    "serde_json",
+    "serde_spanned",
+    "sha1",
+    "sha2",
+    "shell-escape",
+    "signature",
+    "similar",
+    "sized-chunks",
+    "snapbox",
+    "snapbox-macros",
+    "socket2",
+    "socket2",
+    "spki",
+    "strip-ansi-escapes",
+    "strsim",
+    "subtle",
+    "syn",
+    "tar",
+    "tempfile",
+    "termcolor",
+    "thread_local",
+    "time",
+    "time-core",
+    "time-macros",
+    "tinyvec",
+    "tinyvec_macros",
+    "toml",
+    "toml_datetime",
+    "toml_edit",
+    "typenum",
+    "unicode-bidi",
+    "unicode-ident",
+    "unicode-normalization",
+    "unicode-width",
+    "unicode-xid",
+    "url",
+    "utf8parse",
+    "vcpkg",
+    "version_check",
+    "vte",
+    "vte_generate_state_changes",
+    "walkdir",
+    "wasi",
+    "winapi",
+    "winapi-i686-pc-windows-gnu",
+    "winapi-util",
+    "winapi-x86_64-pc-windows-gnu",
+    "windows-sys",
+    "windows-sys",
+    "windows_aarch64_gnullvm",
+    "windows_aarch64_gnullvm",
+    "windows_aarch64_msvc",
+    "windows_i686_gnu",
+    "windows_i686_msvc",
+    "windows_x86_64_gnu",
+    "windows_x86_64_gnullvm",
+    "windows_x86_64_msvc",
+    "yansi",
+    "zeroize",
 ];
 
 const PERMITTED_CRANELIFT_DEPENDENCIES: &[&str] = &[
@@ -356,8 +565,25 @@ pub fn check(root: &Path, cargo: &Path, bad: &mut bool) {
         &["rustc_driver", "rustc_codegen_llvm"],
         bad,
     );
-    check_crate_duplicate(&metadata, FORBIDDEN_TO_HAVE_DUPLICATES, bad);
-    check_rustfix(&metadata, bad);
+    check_crate_duplicate(&metadata, &[], bad);
+
+    // Check cargo independently as it has it's own workspace.
+    let mut cmd = cargo_metadata::MetadataCommand::new();
+    cmd.cargo_path(cargo)
+        .manifest_path(root.join("src/tools/cargo/Cargo.toml"))
+        .features(cargo_metadata::CargoOpt::AllFeatures);
+    let cargo_metadata = t!(cmd.exec());
+    let runtime_ids = HashSet::new();
+    check_license_exceptions(&cargo_metadata, EXCEPTIONS_CARGO, runtime_ids, bad);
+    check_permitted_dependencies(
+        &cargo_metadata,
+        "cargo",
+        PERMITTED_CARGO_DEPENDENCIES,
+        &["cargo"],
+        bad,
+    );
+    check_crate_duplicate(&cargo_metadata, FORBIDDEN_TO_HAVE_DUPLICATES, bad);
+    check_rustfix(&metadata, &cargo_metadata, bad);
 
     // Check rustc_codegen_cranelift independently as it has it's own workspace.
     let mut cmd = cargo_metadata::MetadataCommand::new();
@@ -609,11 +835,11 @@ fn direct_deps_of<'a>(metadata: &'a Metadata, pkg_id: &'a PackageId) -> Vec<&'a 
     node.deps.iter().map(|dep| pkg_from_id(metadata, &dep.pkg)).collect()
 }
 
-fn check_rustfix(metadata: &Metadata, bad: &mut bool) {
-    let cargo = pkg_from_name(metadata, "cargo");
-    let compiletest = pkg_from_name(metadata, "compiletest");
-    let cargo_deps = direct_deps_of(metadata, &cargo.id);
-    let compiletest_deps = direct_deps_of(metadata, &compiletest.id);
+fn check_rustfix(rust_metadata: &Metadata, cargo_metadata: &Metadata, bad: &mut bool) {
+    let cargo = pkg_from_name(cargo_metadata, "cargo");
+    let compiletest = pkg_from_name(rust_metadata, "compiletest");
+    let cargo_deps = direct_deps_of(cargo_metadata, &cargo.id);
+    let compiletest_deps = direct_deps_of(rust_metadata, &compiletest.id);
     let cargo_rustfix = cargo_deps.iter().find(|p| p.name == "rustfix").unwrap();
     let compiletest_rustfix = compiletest_deps.iter().find(|p| p.name == "rustfix").unwrap();
     if cargo_rustfix.version != compiletest_rustfix.version {

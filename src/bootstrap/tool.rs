@@ -80,7 +80,7 @@ impl Step for ToolBuild {
         let is_expected = compile::stream_cargo(builder, cargo, vec![], &mut |msg| {
             // Only care about big things like the RLS/Cargo for now
             match tool {
-                "rls" | "cargo" | "clippy-driver" | "miri" | "rustfmt" => {}
+                "rls" | "clippy-driver" | "miri" | "rustfmt" => {}
 
                 _ => return,
             }
