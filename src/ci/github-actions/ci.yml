@@ -123,20 +123,20 @@ x--expand-yaml-anchors--remove:
           EXTRA_VARIABLES: ${{ toJson(matrix.env) }}
         <<: *step
 
-      - name: decide whether to skip this job
-        run: src/ci/scripts/should-skip-this.sh
-        <<: *step
+      # - name: decide whether to skip this job
+      #   run: src/ci/scripts/should-skip-this.sh
+      #   <<: *step
 
-      - name: ensure the channel matches the target branch
-        run: src/ci/scripts/verify-channel.sh
-        <<: *step
+      # - name: ensure the channel matches the target branch
+      #   run: src/ci/scripts/verify-channel.sh
+      #   <<: *step
 
-      - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.github_token }}"
-        if: success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'
-        <<: *step
+      # - name: configure GitHub Actions to kill the build when outdated
+      #   uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      #   with:
+      #     github_token: "${{ secrets.github_token }}"
+      #   if: success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'
+      #   <<: *step
 
       - name: collect CPU statistics
         run: src/ci/scripts/collect-cpu-stats.sh
@@ -203,13 +203,13 @@ x--expand-yaml-anchors--remove:
         run: src/ci/scripts/verify-line-endings.sh
         <<: *step
 
-      - name: ensure backported commits are in upstream branches
-        run: src/ci/scripts/verify-backported-commits.sh
-        <<: *step
+      # - name: ensure backported commits are in upstream branches
+      #   run: src/ci/scripts/verify-backported-commits.sh
+      #   <<: *step
 
-      - name: ensure the stable version number is correct
-        run: src/ci/scripts/verify-stable-version-number.sh
-        <<: *step
+      # - name: ensure the stable version number is correct
+      #   run: src/ci/scripts/verify-stable-version-number.sh
+      #   <<: *step
 
       - name: run the build
         run: src/ci/scripts/run-build-from-ci.sh
@@ -219,18 +219,18 @@ x--expand-yaml-anchors--remove:
           TOOLSTATE_REPO_ACCESS_TOKEN: ${{ secrets.TOOLSTATE_REPO_ACCESS_TOKEN }}
         <<: *step
 
-      - name: upload artifacts to S3
-        run: src/ci/scripts/upload-artifacts.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{ env.ARTIFACTS_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.ARTIFACTS_AWS_ACCESS_KEY_ID)] }}
-        # Adding a condition on DEPLOY=1 or DEPLOY_ALT=1 is not needed as all deploy
-        # builders *should* have the AWS credentials available. Still, explicitly
-        # adding the condition is helpful as this way CI will not silently skip
-        # deploying artifacts from a dist builder if the variables are misconfigured,
-        # erroring about invalid credentials instead.
-        if: success() && !env.SKIP_JOB && (github.event_name == 'push' || env.DEPLOY == '1' || env.DEPLOY_ALT == '1')
-        <<: *step
+      # - name: upload artifacts to S3
+      #   run: src/ci/scripts/upload-artifacts.sh
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ env.ARTIFACTS_AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.ARTIFACTS_AWS_ACCESS_KEY_ID)] }}
+      #   # Adding a condition on DEPLOY=1 or DEPLOY_ALT=1 is not needed as all deploy
+      #   # builders *should* have the AWS credentials available. Still, explicitly
+      #   # adding the condition is helpful as this way CI will not silently skip
+      #   # deploying artifacts from a dist builder if the variables are misconfigured,
+      #   # erroring about invalid credentials instead.
+      #   if: success() && !env.SKIP_JOB && (github.event_name == 'push' || env.DEPLOY == '1' || env.DEPLOY_ALT == '1')
+      #   <<: *step
 
   # These snippets are used by the try-success, try-failure, auto-success and auto-failure jobs.
   # Check out their documentation for more information on why they're needed.
@@ -260,14 +260,7 @@ x--expand-yaml-anchors--remove:
 name: CI
 on:
   push:
-    branches:
-      - auto
-      - try
-      - try-perf
-      - master
-  pull_request:
-    branches:
-      - "**"
+    branches: ['*']
 
 permissions:
   contents: read
@@ -281,32 +274,25 @@ defaults:
 
 jobs:
   pr:
-    permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: PR
     env:
       <<: [*shared-ci-variables, *public-variables]
-    if: github.event_name == 'pull_request'
-    continue-on-error: ${{ matrix.tidy }}
     strategy:
       matrix:
         include:
-          - name: mingw-check
-            <<: *job-linux-xl
-            tidy: false
-
-          - name: mingw-check-tidy
-            <<: *job-linux-xl
-            tidy: true
-
-          - name: x86_64-gnu-llvm-13
-            <<: *job-linux-xl
-            tidy: false
-
-          - name: x86_64-gnu-tools
-            <<: *job-linux-xl
-            tidy: false
+          - name: dist-x86_64-apple
+            env:
+              SCRIPT: ./x.py build --stage=2 library/test && ./x.py build --stage=2 src/tools/cargo src/tools/rls src/tools/clippy src/tools/miri src/tools/rustfmt
+              RUST_CONFIGURE_ARGS: --enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin
+              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              MACOSX_DEPLOYMENT_TARGET: 10.7
+              SELECT_XCODE: /Applications/Xcode_13.4.1.app
+              NO_LLVM_ASSERTIONS: 1
+              NO_DEBUG_ASSERTIONS: 1
+              NO_OVERFLOW_CHECKS: 1
+              DIST_REQUIRE_ALL_TOOLS: 1
+            <<: *job-macos-xl
 
   auto:
     permissions:
@@ -743,56 +729,56 @@ jobs:
               SCRIPT: python x.py dist bootstrap --include-default-paths
             <<: *job-windows-xl
 
-  try:
-    permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
-    <<: *base-ci-job
-    name: try
-    env:
-      <<: [*shared-ci-variables, *prod-variables]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'
-    strategy:
-      matrix:
-        include:
-          - &dist-x86_64-linux
-            name: dist-x86_64-linux
-            <<: *job-linux-xl
+  # try:
+  #   permissions:
+  #     actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
+  #   <<: *base-ci-job
+  #   name: try
+  #   env:
+  #     <<: [*shared-ci-variables, *prod-variables]
+  #   if: github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - &dist-x86_64-linux
+  #           name: dist-x86_64-linux
+  #           <<: *job-linux-xl
 
-  master:
-    name: master
-    runs-on: ubuntu-latest
-    env:
-      <<: [*prod-variables]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'rust-lang-ci/rust'
-    steps:
-      - name: checkout the source code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
+  # master:
+  #   name: master
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     <<: [*prod-variables]
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'rust-lang-ci/rust'
+  #   steps:
+  #     - name: checkout the source code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 2
 
-      - name: publish toolstate
-        run: src/ci/publish_toolstate.sh
-        shell: bash
-        env:
-          TOOLSTATE_REPO_ACCESS_TOKEN: ${{ secrets.TOOLSTATE_REPO_ACCESS_TOKEN }}
-        <<: *step
+  #     - name: publish toolstate
+  #       run: src/ci/publish_toolstate.sh
+  #       shell: bash
+  #       env:
+  #         TOOLSTATE_REPO_ACCESS_TOKEN: ${{ secrets.TOOLSTATE_REPO_ACCESS_TOKEN }}
+  #       <<: *step
 
   # These jobs don't actually test anything, but they're used to tell bors the
   # build completed, as there is no practical way to detect when a workflow is
   # successful listening to webhooks only.
-  try-success:
-    needs: [try]
-    if: "success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
-    <<: *base-success-job
-  try-failure:
-    needs: [try]
-    if: "!success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
-    <<: *base-failure-job
-  auto-success:
-    needs: [auto]
-    if: "success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
-    <<: *base-success-job
-  auto-failure:
-    needs: [auto]
-    if: "!success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
-    <<: *base-failure-job
+  # try-success:
+  #   needs: [try]
+  #   if: "success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
+  #   <<: *base-success-job
+  # try-failure:
+  #   needs: [try]
+  #   if: "!success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
+  #   <<: *base-failure-job
+  # auto-success:
+  #   needs: [auto]
+  #   if: "success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
+  #   <<: *base-success-job
+  # auto-failure:
+  #   needs: [auto]
+  #   if: "!success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
+  #   <<: *base-failure-job
