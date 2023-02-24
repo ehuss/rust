@@ -49,8 +49,8 @@ export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
 # if ! isCI || isCiBranch auto || isCiBranch beta || isCiBranch try || isCiBranch try-perf; then
     RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.print-step-timings --enable-verbose-tests"
-    RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.metrics"
-    HAS_METRICS=1
+    # RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.metrics"
+    # HAS_METRICS=1
 # fi
 
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-sccache"
