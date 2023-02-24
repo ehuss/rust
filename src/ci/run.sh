@@ -47,11 +47,11 @@ source "$ci_dir/shared.sh"
 
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
-if ! isCI || isCiBranch auto || isCiBranch beta || isCiBranch try || isCiBranch try-perf; then
+# if ! isCI || isCiBranch auto || isCiBranch beta || isCiBranch try || isCiBranch try-perf; then
     RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.print-step-timings --enable-verbose-tests"
     RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.metrics"
     HAS_METRICS=1
-fi
+# fi
 
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-sccache"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --disable-manage-submodules"
