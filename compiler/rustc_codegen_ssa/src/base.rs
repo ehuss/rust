@@ -569,6 +569,7 @@ pub fn codegen_crate<B: ExtraBackendMethods>(
     metadata: EncodedMetadata,
     need_metadata_module: bool,
 ) -> OngoingCodegen<B> {
+    info!("ERIC: codegen_crate start");
     // Skip crate items and just output metadata in -Z no-codegen mode.
     if tcx.sess.opts.unstable_opts.no_codegen || !tcx.sess.opts.output_types.should_codegen() {
         let ongoing_codegen = start_async_codegen(backend, tcx, target_cpu, metadata, None, 1);
@@ -718,6 +719,7 @@ pub fn codegen_crate<B: ExtraBackendMethods>(
     };
 
     for (i, cgu) in codegen_units.iter().enumerate() {
+        info!("ERIC: wait for signal to codegen CGU {i}");
         ongoing_codegen.wait_for_signal_to_codegen_item();
         ongoing_codegen.check_for_errors(tcx.sess);
 
@@ -773,6 +775,7 @@ pub fn codegen_crate<B: ExtraBackendMethods>(
         };
     }
 
+    info!("ERIC: signaling codegen_finished");
     ongoing_codegen.codegen_finished(tcx);
 
     // Since the main thread is sometimes blocked during codegen, we keep track
