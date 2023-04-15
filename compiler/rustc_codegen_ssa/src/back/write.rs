@@ -444,6 +444,7 @@ pub fn start_async_codegen<B: ExtraBackendMethods>(
     metadata_module: Option<CompiledModule>,
     total_cgus: usize,
 ) -> OngoingCodegen<B> {
+    tracing::info!("ERIC: start_async_codegen");
     let (coordinator_send, coordinator_receive) = channel();
     let sess = tcx.sess;
 
@@ -1051,6 +1052,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
     let coordinator_send2 = coordinator_send.clone();
     let helper = jobserver
         .into_helper_thread(move |token| {
+            tracing::info!("ERIC jobserver thread gave us a token");
             drop(coordinator_send2.send(Box::new(Message::Token::<B>(token))));
         })
         .expect("failed to spawn helper thread");
@@ -1232,6 +1234,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
     // necessary. There's already optimizations in place to avoid sending work
     // back to the coordinator if LTO isn't requested.
     return B::spawn_thread(cgcx.time_trace, move || {
+        tracing::info!("ERIC: coordinator thread starting");
         let mut worker_id_counter = 0;
         let mut free_worker_ids = Vec::new();
         let mut get_worker_id = |free_worker_ids: &mut Vec<usize>| {
@@ -1286,11 +1289,13 @@ fn start_executing_work<B: ExtraBackendMethods>(
                     && lto_import_only_modules.is_empty()
                     && main_thread_worker_state == MainThreadWorkerState::Idle))
         {
+            tracing::info!("ERIC: coordinator thread start of loop");
             // While there are still CGUs to be codegened, the coordinator has
             // to decide how to utilize the compiler processes implicit Token:
             // For codegenning more CGU or for running them through LLVM.
             if !codegen_done {
                 if main_thread_worker_state == MainThreadWorkerState::Idle {
+                    tracing::info!("ERIC idle, but not done");
                     // Compute the number of workers that will be running once we've taken as many
                     // items from the work queue as we can, plus one for the main thread. It's not
                     // critically important that we use this instead of just `running`, but it
@@ -1301,7 +1306,10 @@ fn start_executing_work<B: ExtraBackendMethods>(
                     let additional_running = std::cmp::min(extra_tokens, work_items.len());
                     let anticipated_running = running + additional_running + 1;
 
+                    tracing::info!("ERIC: running={running} tokens_len={}", tokens.len());
+                    tracing::info!("ERIC: work_items_len={} anticipated_running={anticipated_running}", work_items.len());
                     if !queue_full_enough(work_items.len(), anticipated_running) {
+                        tracing::info!("ERIC: queue not full enough, asking for more work");
                         // The queue is not full enough, codegen more items:
                         if codegen_worker_send.send(Message::CodegenItem).is_err() {
                             panic!("Could not send Message::CodegenItem to main thread")
@@ -1311,6 +1319,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                         // The queue is full enough to not let the worker
                         // threads starve. Use the implicit Token to do some
                         // LLVM work too.
+                        tracing::info!("ERIC: queue is full enough, processing using implicit token");
                         let (item, _) =
                             work_items.pop().expect("queue empty - queue_full_enough() broken?");
                         let cgcx = CodegenContext {
@@ -1335,6 +1344,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 // Perform the serial work here of figuring out what we're
                 // going to LTO and then push a bunch of work items onto our
                 // queue to do LTO
+                tracing::info!("ERIC: LTO code path???");
                 if work_items.is_empty()
                     && running == 0
                     && main_thread_worker_state == MainThreadWorkerState::Idle
@@ -1401,6 +1411,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
             // Spin up what work we can, only doing this while we've got available
             // parallelism slots and work left to spawn.
             while !codegen_aborted && !work_items.is_empty() && running < tokens.len() {
+                tracing::info!("ERIC: spawning work using real tokens running={running} tokens={}", tokens.len());
                 let (item, _) = work_items.pop().unwrap();
 
                 maybe_start_llvm_timer(prof, cgcx.config(item.module_kind()), &mut llvm_start_time);
@@ -1413,6 +1424,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
             }
 
             // Relinquish accidentally acquired extra tokens
+            tracing::info!("ERIC: relinquish extra tokens len={} running={running}", tokens.len());
             tokens.truncate(running);
 
             // If a thread exits successfully then we drop a token associated
@@ -1436,6 +1448,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 // this to spawn a new unit of work, or it may get dropped
                 // immediately if we have no more work to spawn.
                 Message::Token(token) => {
+                    tracing::info!("ERIC: got token");
                     match token {
                         Ok(token) => {
                             tokens.push(token);
@@ -1467,6 +1480,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                     // Note, however, that this is not ideal for memory
                     // consumption, as LLVM module sizes are not evenly
                     // distributed.
+                    tracing::info!("ERIC: got CodegenDone, adding to work queue");
                     let insertion_index = work_items.binary_search_by_key(&cost, |&(_, cost)| cost);
                     let insertion_index = match insertion_index {
                         Ok(idx) | Err(idx) => idx,
@@ -1481,6 +1495,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 }
 
                 Message::CodegenComplete => {
+                    tracing::info!("ERIC: got CodegenComplete, prepare to exit");
                     codegen_done = true;
                     assert_eq!(main_thread_worker_state, MainThreadWorkerState::Codegenning);
                     main_thread_worker_state = MainThreadWorkerState::Idle;
@@ -1493,10 +1508,12 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 // then conditions above will ensure no more work is spawned but
                 // we'll keep executing this loop until `running` hits 0.
                 Message::CodegenAborted => {
+                    tracing::info!("ERIC: got CodegenAborted");
                     codegen_done = true;
                     codegen_aborted = true;
                 }
                 Message::Done { result: Ok(compiled_module), worker_id } => {
+                    tracing::info!("ERIC: got Done, module is finished");
                     free_worker(worker_id);
                     match compiled_module.kind {
                         ModuleKind::Regular => {
@@ -1510,6 +1527,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                     }
                 }
                 Message::NeedsLink { module, worker_id } => {
+                    tracing::info!("ERIC: got NeedsLink");
                     free_worker(worker_id);
                     needs_link.push(module);
                 }
@@ -1519,11 +1537,13 @@ fn start_executing_work<B: ExtraBackendMethods>(
                     needs_fat_lto.push(result);
                 }
                 Message::NeedsThinLTO { name, thin_buffer, worker_id } => {
+                    tracing::info!("ERIC: got NeedsThinLTO");
                     assert!(!started_lto);
                     free_worker(worker_id);
                     needs_thin_lto.push((name, thin_buffer));
                 }
                 Message::AddImportOnlyModule { module_data, work_product } => {
+                    tracing::info!("ERIC: got AddImportOnlyModule");
                     assert!(!started_lto);
                     assert!(!codegen_done);
                     assert_eq!(main_thread_worker_state, MainThreadWorkerState::Codegenning);
@@ -1543,6 +1563,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 Message::CodegenItem => bug!("the coordinator should not receive codegen requests"),
             }
         }
+        tracing::info!("ERIC: coordinator thread loop finished");
 
         if codegen_aborted {
             return Err(());
@@ -1648,6 +1669,7 @@ pub struct WorkerFatalError;
 
 fn spawn_work<B: ExtraBackendMethods>(cgcx: CodegenContext<B>, work: WorkItem<B>) {
     B::spawn_named_thread(cgcx.time_trace, work.short_description(), move || {
+        tracing::info!("ERIC: worker thread executing work item");
         // Set up a destructor which will fire off a message that we're done as
         // we exit.
         struct Bomb<B: ExtraBackendMethods> {
@@ -1926,6 +1948,7 @@ impl<B: ExtraBackendMethods> OngoingCodegen<B> {
         tcx: TyCtxt<'_>,
         module: ModuleCodegen<B::Module>,
     ) {
+        tracing::info!("ERIC: submit_pre_codegened_module_to_llvm");
         self.wait_for_signal_to_codegen_item();
         self.check_for_errors(tcx.sess);
 
@@ -1935,6 +1958,7 @@ impl<B: ExtraBackendMethods> OngoingCodegen<B> {
     }
 
     pub fn codegen_finished(&self, tcx: TyCtxt<'_>) {
+        tracing::info!("ERIC: codegen_finished");
         self.wait_for_signal_to_codegen_item();
         self.check_for_errors(tcx.sess);
         drop(self.coordinator.sender.send(Box::new(Message::CodegenComplete::<B>)));
@@ -1945,6 +1969,7 @@ impl<B: ExtraBackendMethods> OngoingCodegen<B> {
     }
 
     pub fn wait_for_signal_to_codegen_item(&self) {
+        tracing::info!("ERIC: wait_for_signal_to_codegen_item");
         match self.codegen_worker_receive.recv() {
             Ok(Message::CodegenItem) => {
                 // Nothing to do
@@ -1964,6 +1989,7 @@ pub fn submit_codegened_module_to_llvm<B: ExtraBackendMethods>(
     module: ModuleCodegen<B::Module>,
     cost: u64,
 ) {
+    tracing::info!("ERIC submit_codegened_module_to_llvm");
     let llvm_work_item = WorkItem::Optimize(module);
     drop(tx_to_llvm_workers.send(Box::new(Message::CodegenDone::<B> { llvm_work_item, cost })));
 }
