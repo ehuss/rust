@@ -425,7 +425,7 @@ dependencies = [
  "indexmap",
  "is-terminal",
  "itertools",
- "jobserver",
+ "jobserver 0.1.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static",
  "lazycell",
  "libc",
@@ -561,7 +561,7 @@ dependencies = [
  "core-foundation",
  "filetime",
  "hex",
- "jobserver",
+ "jobserver 0.1.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc",
  "log",
  "miow 0.5.0",
@@ -610,7 +610,7 @@ version = "1.0.77"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e9f73505338f7d905b19d18738976aae232eb46b8efc15554ffc56deb5d9ebe4"
 dependencies = [
- "jobserver",
+ "jobserver 0.1.26 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2865,6 +2865,14 @@ dependencies = [
 [[package]]
 name = "jobserver"
 version = "0.1.26"
+dependencies = [
+ "libc",
+ "tracing",
+]
+
+[[package]]
+name = "jobserver"
+version = "0.1.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "936cfd212a0155903bcbc060e316fb6cc7cbf2e1907329391ebadc1fe0ce77c2"
 dependencies = [
@@ -4508,7 +4516,7 @@ dependencies = [
  "bitflags",
  "cc",
  "itertools",
- "jobserver",
+ "jobserver 0.1.26",
  "libc",
  "object 0.30.1",
  "pathdiff",
@@ -4575,7 +4583,7 @@ dependencies = [
  "ena",
  "indexmap",
  "itertools",
- "jobserver",
+ "jobserver 0.1.26",
  "libc",
  "measureme",
  "memmap2 0.2.1",

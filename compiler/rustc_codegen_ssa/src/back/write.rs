@@ -1448,9 +1448,9 @@ fn start_executing_work<B: ExtraBackendMethods>(
                 // this to spawn a new unit of work, or it may get dropped
                 // immediately if we have no more work to spawn.
                 Message::Token(token) => {
-                    tracing::info!("ERIC: got token");
                     match token {
                         Ok(token) => {
+                        tracing::info!("ERIC: got valid token");
                             tokens.push(token);
 
                             if main_thread_worker_state == MainThreadWorkerState::LLVMing {
@@ -1463,6 +1463,7 @@ fn start_executing_work<B: ExtraBackendMethods>(
                             }
                         }
                         Err(e) => {
+                            tracing::info!("ERIC: got token error {e:?}");
                             let msg = &format!("failed to acquire jobserver token: {}", e);
                             shared_emitter.fatal(msg);
                             codegen_done = true;
