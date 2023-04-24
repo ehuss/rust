@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>1.0.0-alpha - Rust Releases</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="1.69.0.html">1.69.0</a></li><li class="chapter-item expanded affix "><a href="1.68.2.html">1.68.2</a></li><li class="chapter-item expanded affix "><a href="1.68.1.html">1.68.1</a></li><li class="chapter-item expanded affix "><a href="1.68.0.html">1.68.0</a></li><li class="chapter-item expanded affix "><a href="1.67.1.html">1.67.1</a></li><li class="chapter-item expanded affix "><a href="1.67.0.html">1.67.0</a></li><li class="chapter-item expanded affix "><a href="1.66.1.html">1.66.1</a></li><li class="chapter-item expanded affix "><a href="1.66.0.html">1.66.0</a></li><li class="chapter-item expanded affix "><a href="1.65.0.html">1.65.0</a></li><li class="chapter-item expanded affix "><a href="1.64.0.html">1.64.0</a></li><li class="chapter-item expanded affix "><a href="1.63.0.html">1.63.0</a></li><li class="chapter-item expanded affix "><a href="1.62.1.html">1.62.1</a></li><li class="chapter-item expanded affix "><a href="1.62.0.html">1.62.0</a></li><li class="chapter-item expanded affix "><a href="1.61.0.html">1.61.0</a></li><li class="chapter-item expanded affix "><a href="1.60.0.html">1.60.0</a></li><li class="chapter-item expanded affix "><a href="1.59.0.html">1.59.0</a></li><li class="chapter-item expanded affix "><a href="1.58.1.html">1.58.1</a></li><li class="chapter-item expanded affix "><a href="1.58.0.html">1.58.0</a></li><li class="chapter-item expanded affix "><a href="1.57.0.html">1.57.0</a></li><li class="chapter-item expanded affix "><a href="1.56.1.html">1.56.1</a></li><li class="chapter-item expanded affix "><a href="1.56.0.html">1.56.0</a></li><li class="chapter-item expanded affix "><a href="1.55.0.html">1.55.0</a></li><li class="chapter-item expanded affix "><a href="1.54.0.html">1.54.0</a></li><li class="chapter-item expanded affix "><a href="1.53.0.html">1.53.0</a></li><li class="chapter-item expanded affix "><a href="1.52.1.html">1.52.1</a></li><li class="chapter-item expanded affix "><a href="1.52.0.html">1.52.0</a></li><li class="chapter-item expanded affix "><a href="1.51.0.html">1.51.0</a></li><li class="chapter-item expanded affix "><a href="1.50.0.html">1.50.0</a></li><li class="chapter-item expanded affix "><a href="1.49.0.html">1.49.0</a></li><li class="chapter-item expanded affix "><a href="1.48.0.html">1.48.0</a></li><li class="chapter-item expanded affix "><a href="1.47.0.html">1.47.0</a></li><li class="chapter-item expanded affix "><a href="1.46.0.html">1.46.0</a></li><li class="chapter-item expanded affix "><a href="1.45.2.html">1.45.2</a></li><li class="chapter-item expanded affix "><a href="1.45.1.html">1.45.1</a></li><li class="chapter-item expanded affix "><a href="1.45.0.html">1.45.0</a></li><li class="chapter-item expanded affix "><a href="1.44.1.html">1.44.1</a></li><li class="chapter-item expanded affix "><a href="1.44.0.html">1.44.0</a></li><li class="chapter-item expanded affix "><a href="1.43.1.html">1.43.1</a></li><li class="chapter-item expanded affix "><a href="1.43.0.html">1.43.0</a></li><li class="chapter-item expanded affix "><a href="1.42.0.html">1.42.0</a></li><li class="chapter-item expanded affix "><a href="1.41.1.html">1.41.1</a></li><li class="chapter-item expanded affix "><a href="1.41.0.html">1.41.0</a></li><li class="chapter-item expanded affix "><a href="1.40.0.html">1.40.0</a></li><li class="chapter-item expanded affix "><a href="1.39.0.html">1.39.0</a></li><li class="chapter-item expanded affix "><a href="1.38.0.html">1.38.0</a></li><li class="chapter-item expanded affix "><a href="1.37.0.html">1.37.0</a></li><li class="chapter-item expanded affix "><a href="1.36.0.html">1.36.0</a></li><li class="chapter-item expanded affix "><a href="1.35.0.html">1.35.0</a></li><li class="chapter-item expanded affix "><a href="1.34.2.html">1.34.2</a></li><li class="chapter-item expanded affix "><a href="1.34.1.html">1.34.1</a></li><li class="chapter-item expanded affix "><a href="1.34.0.html">1.34.0</a></li><li class="chapter-item expanded affix "><a href="1.33.0.html">1.33.0</a></li><li class="chapter-item expanded affix "><a href="1.32.0.html">1.32.0</a></li><li class="chapter-item expanded affix "><a href="1.31.1.html">1.31.1</a></li><li class="chapter-item expanded affix "><a href="1.31.0.html">1.31.0</a></li><li class="chapter-item expanded affix "><a href="1.30.1.html">1.30.1</a></li><li class="chapter-item expanded affix "><a href="1.30.0.html">1.30.0</a></li><li class="chapter-item expanded affix "><a href="1.29.2.html">1.29.2</a></li><li class="chapter-item expanded affix "><a href="1.29.1.html">1.29.1</a></li><li class="chapter-item expanded affix "><a href="1.29.0.html">1.29.0</a></li><li class="chapter-item expanded affix "><a href="1.28.0.html">1.28.0</a></li><li class="chapter-item expanded affix "><a href="1.27.2.html">1.27.2</a></li><li class="chapter-item expanded affix "><a href="1.27.1.html">1.27.1</a></li><li class="chapter-item expanded affix "><a href="1.27.0.html">1.27.0</a></li><li class="chapter-item expanded affix "><a href="1.26.2.html">1.26.2</a></li><li class="chapter-item expanded affix "><a href="1.26.1.html">1.26.1</a></li><li class="chapter-item expanded affix "><a href="1.26.0.html">1.26.0</a></li><li class="chapter-item expanded affix "><a href="1.25.0.html">1.25.0</a></li><li class="chapter-item expanded affix "><a href="1.24.1.html">1.24.1</a></li><li class="chapter-item expanded affix "><a href="1.24.0.html">1.24.0</a></li><li class="chapter-item expanded affix "><a href="1.23.0.html">1.23.0</a></li><li class="chapter-item expanded affix "><a href="1.22.1.html">1.22.1</a></li><li class="chapter-item expanded affix "><a href="1.22.0.html">1.22.0</a></li><li class="chapter-item expanded affix "><a href="1.21.0.html">1.21.0</a></li><li class="chapter-item expanded affix "><a href="1.20.0.html">1.20.0</a></li><li class="chapter-item expanded affix "><a href="1.19.0.html">1.19.0</a></li><li class="chapter-item expanded affix "><a href="1.18.0.html">1.18.0</a></li><li class="chapter-item expanded affix "><a href="1.17.0.html">1.17.0</a></li><li class="chapter-item expanded affix "><a href="1.16.0.html">1.16.0</a></li><li class="chapter-item expanded affix "><a href="1.15.1.html">1.15.1</a></li><li class="chapter-item expanded affix "><a href="1.15.0.html">1.15.0</a></li><li class="chapter-item expanded affix "><a href="1.14.0.html">1.14.0</a></li><li class="chapter-item expanded affix "><a href="1.13.0.html">1.13.0</a></li><li class="chapter-item expanded affix "><a href="1.12.1.html">1.12.1</a></li><li class="chapter-item expanded affix "><a href="1.12.0.html">1.12.0</a></li><li class="chapter-item expanded affix "><a href="1.11.0.html">1.11.0</a></li><li class="chapter-item expanded affix "><a href="1.10.0.html">1.10.0</a></li><li class="chapter-item expanded affix "><a href="1.9.0.html">1.9.0</a></li><li class="chapter-item expanded affix "><a href="1.8.0.html">1.8.0</a></li><li class="chapter-item expanded affix "><a href="1.7.0.html">1.7.0</a></li><li class="chapter-item expanded affix "><a href="1.6.0.html">1.6.0</a></li><li class="chapter-item expanded affix "><a href="1.5.0.html">1.5.0</a></li><li class="chapter-item expanded affix "><a href="1.4.0.html">1.4.0</a></li><li class="chapter-item expanded affix "><a href="1.3.0.html">1.3.0</a></li><li class="chapter-item expanded affix "><a href="1.2.0.html">1.2.0</a></li><li class="chapter-item expanded affix "><a href="1.1.0.html">1.1.0</a></li><li class="chapter-item expanded affix "><a href="1.0.0.html">1.0.0</a></li><li class="chapter-item expanded affix "><a href="1.0.0-alpha.2.html">1.0.0-alpha.2</a></li><li class="chapter-item expanded affix "><a href="1.0.0-alpha.html" class="active">1.0.0-alpha</a></li><li class="chapter-item expanded affix "><a href="0.12.0.html">0.12.0</a></li><li class="chapter-item expanded affix "><a href="0.11.0.html">0.11.0</a></li><li class="chapter-item expanded affix "><a href="0.10.html">0.10</a></li><li class="chapter-item expanded affix "><a href="0.9.html">0.9</a></li><li class="chapter-item expanded affix "><a href="0.8.html">0.8</a></li><li class="chapter-item expanded affix "><a href="0.7.html">0.7</a></li><li class="chapter-item expanded affix "><a href="0.6.html">0.6</a></li><li class="chapter-item expanded affix "><a href="0.5.html">0.5</a></li><li class="chapter-item expanded affix "><a href="0.4.html">0.4</a></li><li class="chapter-item expanded affix "><a href="0.3.html">0.3</a></li><li class="chapter-item expanded affix "><a href="0.2.html">0.2</a></li><li class="chapter-item expanded affix "><a href="0.1.html">0.1</a></li><li class="chapter-item expanded affix "><a href="all.html">All Releases</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Releases</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rust-lang/rust/tree/master/src/doc/releases/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="version-100-alpha"><a class="header" href="#version-100-alpha">Version 1.0.0-alpha</a></h1>
+<p>Release date: <strong>2015-01-09</strong></p>
+<ul>
+<li>
+<p>~2400 changes, numerous bugfixes</p>
+</li>
+<li>
+<p>Highlights</p>
+<ul>
+<li>The language itself is considered feature complete for 1.0,
+though there will be many usability improvements and bugfixes
+before the final release.</li>
+<li>Nearly 50% of the public API surface of the standard library has
+been declared 'stable'. Those interfaces are unlikely to change
+before 1.0.</li>
+<li>The long-running debate over integer types has been
+<a href="https://github.com/rust-lang/rfcs/pull/544#issuecomment-68760871">settled</a>: Rust will ship with types named <code>isize</code> and
+<code>usize</code>, rather than <code>int</code> and <code>uint</code>, for pointer-sized
+integers. Guidelines will be rolled out during the alpha cycle.</li>
+<li>Most crates that are not <code>std</code> have been moved out of the Rust
+distribution into the Cargo ecosystem so they can evolve
+separately and don't need to be stabilized as quickly, including
+'time', 'getopts', 'num', 'regex', and 'term'.</li>
+<li>Documentation continues to be expanded with more API coverage, more
+examples, and more in-depth explanations. The guides have been
+consolidated into <a href="https://doc.rust-lang.org/book/index.html">The Rust Programming Language</a>.</li>
+<li>&quot;<a href="http://rustbyexample.com/">Rust By Example</a>&quot; is now maintained by the Rust team.</li>
+<li>All official Rust binary installers now come with <a href="https://crates.io">Cargo</a>, the
+Rust package manager.</li>
+</ul>
+</li>
+<li>
+<p>Language</p>
+<ul>
+<li>Closures have been <a href="http://smallcultfollowing.com/babysteps/blog/2014/11/26/purging-proc/">completely redesigned</a> to be
+implemented in terms of traits, can now be used as generic type
+bounds and thus monomorphized and inlined, or via an opaque
+pointer (boxed) as in the old system. The new system is often
+referred to as 'unboxed' closures.</li>
+<li>Traits now support <a href="https://github.com/rust-lang/rfcs/blob/master/text/0195-associated-items.md">associated types</a>, allowing families
+of related types to be defined together and used generically in
+powerful ways.</li>
+<li>Enum variants are <a href="https://github.com/rust-lang/rfcs/blob/master/text/0390-enum-namespacing.md">namespaced by their type names</a>.</li>
+<li><a href="https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md"><code>where</code> clauses</a> provide a more versatile and attractive
+syntax for specifying generic bounds, though the previous syntax
+remains valid.</li>
+<li>Rust again picks a <a href="https://github.com/rust-lang/rfcs/blob/master/text/0212-restore-int-fallback.md">fallback</a> (either i32 or f64) for uninferred
+numeric types.</li>
+<li>Rust <a href="https://github.com/rust-lang/rfcs/blob/master/text/0230-remove-runtime.md">no longer has a runtime</a> of any description, and only
+supports OS threads, not green threads.</li>
+<li>At long last, Rust has been overhauled for 'dynamically-sized
+types' (<a href="http://smallcultfollowing.com/babysteps/blog/2014/01/05/dst-take-5/">DST</a>), which integrates 'fat pointers' (object types,
+arrays, and <code>str</code>) more deeply into the type system, making it
+more consistent.</li>
+<li>Rust now has a general <a href="https://github.com/rust-lang/rfcs/blob/master/text/0439-cmp-ops-reform.md#indexing-and-slicing">range syntax</a>, <code>i..j</code>, <code>i..</code>, and
+<code>..j</code> that produce range types and which, when combined with the
+<code>Index</code> operator and multidispatch, leads to a convenient slice
+notation, <code>[i..j]</code>.</li>
+<li>The new range syntax revealed an ambiguity in the fixed-length
+array syntax, so now fixed length arrays <a href="https://github.com/rust-lang/rfcs/blob/master/text/0520-new-array-repeat-syntax.md">are written <code>[T; N]</code></a>.</li>
+<li>The <code>Copy</code> trait is no longer implemented automatically. Unsafe
+pointers no longer implement <code>Sync</code> and <code>Send</code> so types
+containing them don't automatically either. <code>Sync</code> and <code>Send</code>
+are now 'unsafe traits' so one can &quot;forcibly&quot; implement them via
+<code>unsafe impl</code> if a type confirms to the requirements for them
+even though the internals do not (e.g. structs containing unsafe
+pointers like <code>Arc</code>). These changes are intended to prevent some
+footguns and are collectively known as <a href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md">opt-in built-in
+traits</a> (though <code>Sync</code> and <code>Send</code> will soon become pure
+library types unknown to the compiler).</li>
+<li>Operator traits now take their operands <a href="https://github.com/rust-lang/rfcs/blob/master/text/0439-cmp-ops-reform.md">by value</a>, and
+comparison traits can use multidispatch to compare one type
+against multiple other types, allowing e.g. <code>String</code> to be
+compared with <code>&amp;str</code>.</li>
+<li><code>if let</code> and <code>while let</code> are no longer feature-gated.</li>
+<li>Rust has adopted a more <a href="https://github.com/rust-lang/rfcs/blob/master/text/0446-es6-unicode-escapes.md">uniform syntax for escaping unicode
+characters</a>.</li>
+<li><code>macro_rules!</code> <a href="https://github.com/rust-lang/rfcs/blob/master/text/0453-macro-reform.md">has been declared stable</a>. Though it is a
+flawed system it is sufficiently popular that it must be usable
+for 1.0. Effort has gone into <a href="https://github.com/rust-lang/rfcs/pull/550">future-proofing</a> it
+in ways that will allow other macro systems to be developed in
+parallel, and won't otherwise impact the evolution of the
+language.</li>
+<li>The prelude has been <a href="https://github.com/rust-lang/rfcs/blob/master/text/0503-prelude-stabilization.md">pared back significantly</a> such
+that it is the minimum necessary to support the most pervasive
+code patterns, and through <a href="https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md">generalized where clauses</a>
+many of the prelude extension traits have been consolidated.</li>
+<li>Rust's rudimentary reflection <a href="https://github.com/rust-lang/rfcs/blob/master/text/0379-remove-reflection.md">has been removed</a>, as it
+incurred too much code generation for little benefit.</li>
+<li><a href="https://github.com/rust-lang/rfcs/blob/master/text/0418-struct-variants.md">Struct variants</a> are no longer feature-gated.</li>
+<li>Trait bounds can be <a href="https://github.com/rust-lang/rfcs/blob/master/text/0387-higher-ranked-trait-bounds.md">polymorphic over lifetimes</a>. Also
+known as 'higher-ranked trait bounds', this crucially allows
+unboxed closures to work.</li>
+<li>Macros invocations surrounded by parens or square brackets and
+not terminated by a semicolon are <a href="https://github.com/rust-lang/rfcs/blob/master/text/0378-expr-macros.md">parsed as
+expressions</a>, which makes expressions like <code>vec![1i32, 2, 3].len()</code> work as expected.</li>
+<li>Trait objects now implement their traits automatically, and
+traits that can be coerced to objects now must be <a href="https://github.com/rust-lang/rfcs/blob/master/text/0255-object-safety.md">object
+safe</a>.</li>
+<li>Automatically deriving traits is now done with <code>#[derive(...)]</code>
+not <code>#[deriving(...)]</code> for <a href="https://github.com/rust-lang/rfcs/blob/master/text/0534-deriving2derive.md">consistency with other naming
+conventions</a>.</li>
+<li>Importing the containing module or enum at the same time as
+items or variants they contain is <a href="https://github.com/rust-lang/rfcs/blob/master/text/0532-self-in-use.md">now done with <code>self</code> instead
+of <code>mod</code></a>, as in use <code>foo::{self, bar}</code></li>
+<li>Glob imports are no longer feature-gated.</li>
+<li>The <code>box</code> operator and <code>box</code> patterns have been feature-gated
+pending a redesign. For now unique boxes should be allocated
+like other containers, with <code>Box::new</code>.</li>
+</ul>
+</li>
+<li>
+<p>Libraries</p>
+<ul>
+<li>A <a href="https://github.com/rust-lang/rfcs/blob/master/text/0235-collections-conventions.md">series</a> of <a href="https://github.com/rust-lang/rfcs/blob/master/text/0509-collections-reform-part-2.md">efforts</a> to establish
+<a href="https://github.com/rust-lang/rfcs/blob/master/text/0216-collection-views.md">conventions</a> for collections types has resulted in API
+improvements throughout the standard library.</li>
+<li>New <a href="https://github.com/rust-lang/rfcs/blob/master/text/0201-error-chaining.md">APIs for error handling</a> provide ergonomic interop
+between error types, and <a href="https://github.com/rust-lang/rfcs/blob/master/text/0236-error-conventions.md">new conventions</a> describe
+more clearly the recommended error handling strategies in Rust.</li>
+<li>The <code>fail!</code> macro has been renamed to <a href="https://github.com/rust-lang/rfcs/blob/master/text/0221-panic.md"><code>panic!</code></a> so that
+it is easier to discuss failure in the context of error handling
+without making clarifications as to whether you are referring to
+the 'fail' macro or failure more generally.</li>
+<li>On Linux, <code>OsRng</code> prefers the new, more reliable <code>getrandom</code>
+syscall when available.</li>
+<li>The 'serialize' crate has been renamed 'rustc-serialize' and
+moved out of the distribution to Cargo. Although it is widely
+used now, it is expected to be superseded in the near future.</li>
+<li>The <code>Show</code> formatter, typically implemented with
+<code>#[derive(Show)]</code> is <a href="https://github.com/rust-lang/rfcs/blob/master/text/0504-show-stabilization.md">now requested with the <code>{:?}</code>
+specifier</a> and is intended for use by all types, for uses
+such as <code>println!</code> debugging. The new <code>String</code> formatter must be
+implemented by hand, uses the <code>{}</code> specifier, and is intended
+for full-fidelity conversions of things that can logically be
+represented as strings.</li>
+</ul>
+</li>
+<li>
+<p>Tooling</p>
+<ul>
+<li><a href="https://github.com/rust-lang/rfcs/blob/master/text/0131-target-specification.md">Flexible target specification</a> allows rustc's code
+generation to be configured to support otherwise-unsupported
+platforms.</li>
+<li>Rust comes with rust-gdb and rust-lldb scripts that launch their
+respective debuggers with Rust-appropriate pretty-printing.</li>
+<li>The Windows installation of Rust is distributed with the
+MinGW components currently required to link binaries on that
+platform.</li>
+</ul>
+</li>
+<li>
+<p>Misc</p>
+<ul>
+<li>Nullable enum optimizations have been extended to more types so
+that e.g. <code>Option&lt;Vec&lt;T&gt;&gt;</code> and <code>Option&lt;String&gt;</code> take up no more
+space than the inner types themselves.</li>
+<li>Work has begun on supporting AArch64.</li>
+</ul>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="1.0.0-alpha.2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="0.12.0.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="1.0.0-alpha.2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="0.12.0.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
