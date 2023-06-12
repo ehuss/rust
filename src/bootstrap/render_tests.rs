@@ -20,7 +20,7 @@ pub(crate) fn add_flags_and_try_run_tests(builder: &Builder<'_>, cmd: &mut Comma
     }
     cmd.args(&["-Z", "unstable-options", "--format", "json"]);
 
-    try_run_tests(builder, cmd)
+    try_run_tests(builder, cmd) // force conflict
 }
 
 pub(crate) fn try_run_tests(builder: &Builder<'_>, cmd: &mut Command) -> bool {
