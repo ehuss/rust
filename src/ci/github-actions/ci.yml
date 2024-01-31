@@ -111,7 +111,7 @@ x--expand-yaml-anchors--remove:
     if: success() && !env.SKIP_JOB
 
   - &base-ci-job
-    timeout-minutes: 600
+    timeout-minutes: 240
     runs-on: "${{ matrix.os }}"
     env: *shared-ci-variables
     steps:

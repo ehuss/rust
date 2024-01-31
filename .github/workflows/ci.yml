@@ -110,7 +110,7 @@ jobs:
               DIST_REQUIRE_ALL_TOOLS: 1
               CODEGEN_BACKENDS: "llvm,cranelift"
             os: macos-13
-    timeout-minutes: 600
+    timeout-minutes: 240
     runs-on: "${{ matrix.os }}"
     steps:
       - name: disable git crlf conversion
