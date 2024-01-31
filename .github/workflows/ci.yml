@@ -48,7 +48,7 @@ jobs:
           - name: dist-x86_64-apple-1
             env:
               SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
@@ -61,7 +61,7 @@ jobs:
           - name: dist-x86_64-apple-2
             env:
               SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
@@ -74,7 +74,7 @@ jobs:
           - name: dist-x86_64-apple-3
             env:
               SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
@@ -87,7 +87,7 @@ jobs:
           - name: dist-x86_64-apple-4
             env:
               SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
@@ -100,7 +100,7 @@ jobs:
           - name: dist-x86_64-apple-5
             env:
               SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
-              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin"
+              RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
@@ -143,6 +143,9 @@ jobs:
         if: success() && !env.SKIP_JOB
       - name: install clang
         run: src/ci/scripts/install-clang.sh
+        if: success() && !env.SKIP_JOB
+      - name: install ninja
+        run: src/ci/scripts/install-ninja.sh
         if: success() && !env.SKIP_JOB
       - name: install tidy
         run: src/ci/scripts/install-tidy.sh
