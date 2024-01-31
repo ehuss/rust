@@ -47,7 +47,7 @@ jobs:
         include:
           - name: dist-x86_64-apple-1
             env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              SCRIPT: "./x.py build llvm --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
               RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
@@ -60,7 +60,7 @@ jobs:
             os: macos-13
           - name: dist-x86_64-apple-2
             env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              SCRIPT: "./x.py build llvm --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
               RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
@@ -73,7 +73,7 @@ jobs:
             os: macos-13
           - name: dist-x86_64-apple-3
             env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              SCRIPT: "./x.py build llvm --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
               RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
@@ -86,7 +86,7 @@ jobs:
             os: macos-13
           - name: dist-x86_64-apple-4
             env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              SCRIPT: "./x.py build llvm --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
               RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
@@ -99,7 +99,7 @@ jobs:
             os: macos-13
           - name: dist-x86_64-apple-5
             env:
-              SCRIPT: "./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
+              SCRIPT: "./x.py build llvm --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin"
               RUST_CONFIGURE_ARGS: "--enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set rust.lto=thin"
               RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.12
