@@ -1,7 +1,5 @@
 #![feature(proc_macro_quote)]
 
-extern crate proc_macro;
-
 use proc_macro::{quote, Ident, Span, TokenStream, TokenTree};
 
 #[proc_macro_attribute]

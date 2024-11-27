@@ -1,7 +1,5 @@
 #![feature(proc_macro_quote)]
 
-extern crate proc_macro;
-
 use proc_macro::{TokenStream, quote};
 
 #[proc_macro_derive(AnotherMacro, attributes(pointee))]

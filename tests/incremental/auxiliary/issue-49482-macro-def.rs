@@ -1,7 +1,5 @@
 #![allow(non_snake_case)]
 
-extern crate proc_macro;
-
 macro_rules! proc_macro_expr_impl {
     ($(
         $( #[$attr:meta] )*

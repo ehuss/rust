@@ -1,6 +1,5 @@
 #![feature(proc_macro_raw_ident)]
 
-extern crate proc_macro;
 use proc_macro::*;
 
 #[proc_macro]

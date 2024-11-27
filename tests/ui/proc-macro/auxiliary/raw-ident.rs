@@ -1,4 +1,3 @@
-extern crate proc_macro;
 use proc_macro::{TokenStream, TokenTree, Ident, Punct, Spacing, Span};
 
 #[proc_macro]

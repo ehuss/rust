@@ -2,7 +2,6 @@
 
 #![feature(proc_macro_def_site)]
 
-extern crate proc_macro;
 extern crate make_macro;
 use proc_macro::{TokenStream, Span};
 

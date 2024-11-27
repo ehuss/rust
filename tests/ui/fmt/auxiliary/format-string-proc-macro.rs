@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::{Delimiter, Group, Ident, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
 use std::iter::FromIterator;
 

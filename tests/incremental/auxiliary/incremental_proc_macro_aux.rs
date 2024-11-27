@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::TokenStream;
 
 // Add a function to shift DefIndex of registrar function

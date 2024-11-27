@@ -1,7 +1,6 @@
 //@ run-pass
 //@ ignore-pass
 
-extern crate proc_macro;
 use proc_macro::*;
 
 #[proc_macro]

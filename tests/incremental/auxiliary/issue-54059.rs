@@ -2,8 +2,6 @@
 
 #![allow(non_snake_case)]
 
-extern crate proc_macro;
-
 macro_rules! proc_macro_tokenstream {
     () => {
         ::proc_macro::TokenStream
@@ -41,6 +39,6 @@ proc_macro_expr_impl! {
 }
 
 #[link(name="rust_test_helpers")]
-extern "C" {
+unsafe extern "C" {
     pub fn rust_dbg_extern_identity_u64(v: u64) -> u64;
 }

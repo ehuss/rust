@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::*;
 
 // This proc macro ignores its input and returns this token stream

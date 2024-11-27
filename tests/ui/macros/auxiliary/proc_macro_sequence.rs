@@ -1,7 +1,5 @@
 #![feature(proc_macro_span, proc_macro_quote)]
 
-extern crate proc_macro;
-
 use proc_macro::{quote, Span, TokenStream, TokenTree};
 
 // This macro generates a macro with the same macro definition as `manual_foo` in

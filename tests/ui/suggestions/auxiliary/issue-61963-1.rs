@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::{Group, TokenStream, TokenTree};
 
 // This macro exists as part of a reproduction of #61963 but without using quote/syn/proc_macro2.

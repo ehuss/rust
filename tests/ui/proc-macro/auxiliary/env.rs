@@ -1,7 +1,5 @@
 #![feature(proc_macro_tracked_env)]
 
-extern crate proc_macro;
-
 use proc_macro::TokenStream;
 use proc_macro::tracked_env::var;
 

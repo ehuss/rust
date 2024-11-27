@@ -1,4 +1,3 @@
-extern crate proc_macro;
 use proc_macro::{Ident, Group, TokenStream, TokenTree as Tt};
 
 // This constant has to be above the ALLOCATING_ALGO_THRESHOLD

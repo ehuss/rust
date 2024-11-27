@@ -1,5 +1,6 @@
 // A proc-macro in 2015 that has an RPIT without `use<>` that would cause a
 // problem with 2024 capturing rules.
+//@ edition: 2015
 
 extern crate proc_macro;
 use proc_macro::TokenStream;

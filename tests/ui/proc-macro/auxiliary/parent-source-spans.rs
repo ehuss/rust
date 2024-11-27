@@ -1,7 +1,5 @@
 #![feature(proc_macro_diagnostic, proc_macro_span)]
 
-extern crate proc_macro;
-
 use proc_macro::{TokenStream, TokenTree, Span};
 
 fn lit_span(tt: TokenTree) -> (Span, String) {

@@ -1,7 +1,6 @@
 #![feature(allow_internal_unsafe)]
 #![feature(allow_internal_unstable)]
 
-extern crate proc_macro;
 use proc_macro::*;
 
 #[proc_macro]

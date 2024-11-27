@@ -1,8 +1,6 @@
 #![deny(warnings)]
 #![feature(proc_macro_expand, proc_macro_span)]
 
-extern crate proc_macro;
-
 use proc_macro::*;
 use std::str::FromStr;
 

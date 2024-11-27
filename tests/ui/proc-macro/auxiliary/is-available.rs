@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::{Literal, TokenStream, TokenTree};
 
 #[proc_macro]

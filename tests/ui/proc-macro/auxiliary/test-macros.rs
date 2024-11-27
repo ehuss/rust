@@ -1,7 +1,6 @@
 // Proc macros commonly used by tests.
 // `panic`/`print` -> `panic_bang`/`print_bang` to avoid conflicts with standard macros.
 
-extern crate proc_macro;
 use proc_macro::{TokenStream, TokenTree};
 
 // Macro that return empty token stream.

@@ -1,7 +1,5 @@
 #![feature(proc_macro_diagnostic, proc_macro_span, proc_macro_def_site)]
 
-extern crate proc_macro;
-
 use proc_macro::{TokenStream, TokenTree, Span, Diagnostic};
 
 fn parse(input: TokenStream) -> Result<(), Diagnostic> {

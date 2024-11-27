@@ -428,8 +428,8 @@ impl<'test> TestCx<'test> {
             .arg(&aux_dir)
             .arg("-A")
             .arg("internal_features")
-            .args(&self.props.compile_flags)
             .envs(self.props.rustc_env.clone());
+        self.add_common_args(&mut rustc);
         self.maybe_add_external_args(&mut rustc, &self.config.target_rustcflags);
 
         let src = match read_from {
@@ -534,7 +534,7 @@ impl<'test> TestCx<'test> {
             .arg("internal_features");
         self.set_revision_flags(&mut rustc);
         self.maybe_add_external_args(&mut rustc, &self.config.target_rustcflags);
-        rustc.args(&self.props.compile_flags);
+        self.add_common_args(&mut rustc);
 
         self.compose_and_run_compiler(rustc, Some(src), self.testpaths)
     }
@@ -937,8 +937,8 @@ impl<'test> TestCx<'test> {
             .arg(&self.testpaths.file)
             .arg("-A")
             .arg("internal_features")
-            .args(&self.props.compile_flags)
             .args(&self.props.doc_flags);
+        self.add_common_args(&mut rustdoc);
 
         if self.config.mode == RustdocJson {
             rustdoc.arg("--output-format").arg("json").arg("-Zunstable-options");
@@ -1242,6 +1242,9 @@ impl<'test> TestCx<'test> {
             self.props.from_aux_file(&aux_testpaths.file, self.revision, self.config);
         if aux_type == Some(AuxType::ProcMacro) {
             aux_props.force_host = true;
+            if aux_props.edition.is_none() {
+                aux_props.edition = Some("2024".to_string());
+            }
         }
         let mut aux_dir = aux_dir.to_path_buf();
         if aux_type == Some(AuxType::Bin) {
@@ -1731,7 +1734,7 @@ impl<'test> TestCx<'test> {
             }
         }
 
-        rustc.args(&self.props.compile_flags);
+        self.add_common_args(&mut rustc);
 
         // FIXME(jieyouxu): we should report a fatal error or warning if user wrote `-Cpanic=` with
         // something that's not `abort`, however, by moving this last we should override previous
@@ -1743,6 +1746,13 @@ impl<'test> TestCx<'test> {
         }
 
         rustc
+    }
+
+    fn add_common_args(&self, cmd: &mut Command) {
+        cmd.args(&self.props.compile_flags);
+        if let Some(edition) = &self.props.edition {
+            cmd.args(&["--edition", edition.as_str()]);
+        }
     }
 
     fn make_exe_name(&self) -> PathBuf {

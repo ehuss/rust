@@ -1,7 +1,5 @@
 #![feature(proc_macro_span)]
 
-extern crate proc_macro;
-
 use proc_macro::*;
 
 // Re-emits the input tokens by parsing them from strings

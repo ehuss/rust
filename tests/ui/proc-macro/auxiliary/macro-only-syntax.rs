@@ -8,7 +8,6 @@
 
 #![feature(proc_macro_span)]
 
-extern crate proc_macro;
 use proc_macro::{token_stream, Delimiter, TokenStream, TokenTree};
 use std::path::Component;
 

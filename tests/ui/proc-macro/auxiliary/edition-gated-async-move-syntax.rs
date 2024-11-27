@@ -2,7 +2,6 @@
 // syntax-issue89699.rs, emitting an `async move` closure. This syntax is only available in
 // editions 2018 and up, but is used in edition 2015 in the test.
 
-extern crate proc_macro;
 use proc_macro::*;
 
 #[proc_macro_attribute]

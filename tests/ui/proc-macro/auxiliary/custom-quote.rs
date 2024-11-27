@@ -2,7 +2,6 @@
 
 #![feature(proc_macro_quote)]
 
-extern crate proc_macro;
 use std::iter::FromIterator;
 use std::str::FromStr;
 use proc_macro::*;

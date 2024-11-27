@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 struct Zeroable;
 
 #[proc_macro_derive(Zeroable)]

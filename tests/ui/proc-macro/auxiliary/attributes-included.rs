@@ -1,5 +1,3 @@
-extern crate proc_macro;
-
 use proc_macro::{TokenStream, TokenTree, Delimiter, Literal, Spacing, Group};
 
 #[proc_macro_attribute]

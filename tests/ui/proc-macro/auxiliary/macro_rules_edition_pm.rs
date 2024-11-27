@@ -1,4 +1,4 @@
-extern crate proc_macro;
+//@ edition: 2018
 
 use proc_macro::TokenStream;
 

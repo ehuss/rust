@@ -199,6 +199,8 @@ pub struct TestProps {
     /// Build and use `minicore` as `core` stub for `no_core` tests in cross-compilation scenarios
     /// that don't otherwise want/need `-Z build-std`.
     pub add_core_stubs: bool,
+    /// The edition for this test.
+    pub edition: Option<String>,
 }
 
 mod directives {
@@ -247,6 +249,7 @@ mod directives {
     pub const ADD_CORE_STUBS: &'static str = "add-core-stubs";
     // This isn't a real directive, just one that is probably mistyped often
     pub const INCORRECT_COMPILER_FLAGS: &'static str = "compiler-flags";
+    pub const EDITION: &'static str = "edition";
 }
 
 impl TestProps {
@@ -302,6 +305,7 @@ impl TestProps {
             no_auto_check_cfg: false,
             has_enzyme: false,
             add_core_stubs: false,
+            edition: None,
         }
     }
 
@@ -335,7 +339,6 @@ impl TestProps {
     /// `//@[foo]`), then the property is ignored unless `test_revision` is
     /// `Some("foo")`.
     fn load_from(&mut self, testfile: &Path, test_revision: Option<&str>, config: &Config) {
-        let mut has_edition = false;
         if !testfile.is_dir() {
             let file = File::open(testfile).unwrap();
 
@@ -389,10 +392,9 @@ impl TestProps {
                         panic!("`compiler-flags` directive should be spelled `compile-flags`");
                     }
 
-                    if let Some(edition) = config.parse_edition(ln) {
-                        self.compile_flags.push(format!("--edition={}", edition.trim()));
-                        has_edition = true;
-                    }
+                    config.set_name_value_directive(ln, EDITION, &mut self.edition, |r| {
+                        r.trim().to_string()
+                    });
 
                     config.parse_and_update_revisions(testfile, ln, &mut self.revisions);
 
@@ -600,10 +602,6 @@ impl TestProps {
                     self.exec_env.push(((*key).to_owned(), val))
                 }
             }
-        }
-
-        if let (Some(edition), false) = (&config.edition, has_edition) {
-            self.compile_flags.push(format!("--edition={}", edition));
         }
     }
 
@@ -1025,10 +1023,6 @@ impl Config {
         }
 
         None
-    }
-
-    fn parse_edition(&self, line: &str) -> Option<String> {
-        self.parse_name_value_directive(line, "edition")
     }
 
     fn set_name_directive(&self, line: &str, directive: &str, value: &mut bool) {

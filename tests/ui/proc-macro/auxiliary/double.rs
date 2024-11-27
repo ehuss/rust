@@ -1,6 +1,5 @@
 #![feature(proc_macro_quote)]
 
-extern crate proc_macro;
 use proc_macro::*;
 
 // Outputs another copy of the struct.  Useful for testing the tokens

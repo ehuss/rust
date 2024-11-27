@@ -3,8 +3,6 @@
 #![feature(proc_macro_span)]
 #![deny(dead_code)] // catch if a test function is never called
 
-extern crate proc_macro;
-
 mod cmp;
 mod literal;
 

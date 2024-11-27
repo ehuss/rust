@@ -2,7 +2,6 @@
 #![feature(proc_macro_diagnostic)]
 #![feature(proc_macro_quote)]
 
-extern crate proc_macro;
 use proc_macro::*;
 
 #[proc_macro]

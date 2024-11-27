@@ -1,6 +1,4 @@
-extern crate proc_macro;
 use proc_macro::TokenStream;
-
 
 /// Copies the resolution information (the `SyntaxContext`) of the first
 /// token to all other tokens in the stream. Does not recurse into groups.
