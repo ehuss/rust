@@ -58,14 +58,15 @@ if [ "$FORCE_CI_RUSTC" == "" ]; then
     DISABLE_CI_RUSTC_IF_INCOMPATIBLE=1
 fi
 
-RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.print-step-timings --enable-verbose-tests"
-RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set build.metrics"
+RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-verbose-tests"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-verbose-configure"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-sccache"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --disable-manage-submodules"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-locked-deps"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --enable-cargo-native-static"
 RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set rust.codegen-units-std=1"
+RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set rust.llvm-bitcode-linker=false"
+RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --tools=cargo,rustdoc,rust-analyzer,rust-analyzer-proc-macro-srv,analysis"
 # rust-lang/promote-release will recompress CI artifacts, and while we care
 # about the per-commit artifact sizes, it's not as important that they're
 # highly compressed as it is that the process is fast. Best compression
@@ -166,7 +167,7 @@ else
     CODEGEN_BACKENDS="${CODEGEN_BACKENDS:-llvm,cranelift,gcc}"
   else
     # Test the Cranelift backend in CI. Bootstrap knows which targets to run tests on.
-    CODEGEN_BACKENDS="${CODEGEN_BACKENDS:-llvm,cranelift}"
+    CODEGEN_BACKENDS="${CODEGEN_BACKENDS:-llvm}"
   fi
   RUST_CONFIGURE_ARGS="$RUST_CONFIGURE_ARGS --set rust.codegen-backends=$CODEGEN_BACKENDS"
 

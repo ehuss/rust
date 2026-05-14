@@ -15,5 +15,6 @@ set -ex
 for i in {1..20}
 do
   echo Step $i
+  rm -rf build/x86_64-unknown-linux-gnu/stage2-tools
   ../x.py --stage 2 test src/tools/rust-analyzer
 done
