@@ -33,6 +33,9 @@ fi
 if [ -f /proc/sys/kernel/core_pattern ]; then
   ulimit -c unlimited
 fi
+ulimit -c
+cat /proc/sys/kernel/core_pattern
+exit
 
 # There was a bad interaction between "old" 32-bit binaries on current 64-bit
 # kernels with selinux enabled, where ASLR mmap would sometimes choose a low
