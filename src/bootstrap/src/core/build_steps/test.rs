@@ -507,10 +507,10 @@ impl Step for RustAnalyzer {
         //
         // NOTE: you can only skip a specific workspace package via `--exclude=...` if you *also*
         // specify `--workspace`.
-        // cargo.arg("--workspace");
-        // cargo.arg("--exclude=xtask");
-        cargo.arg("-p");
-        cargo.arg("hir-def");
+        cargo.arg("--workspace");
+        cargo.arg("--exclude=xtask");
+        // cargo.arg("-p");
+        // cargo.arg("hir-def");
 
         if build_compiler.stage == 0 {
             // This builds a proc macro against the bootstrap libproc_macro, which is not ABI
