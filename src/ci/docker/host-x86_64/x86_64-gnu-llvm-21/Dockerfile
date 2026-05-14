@@ -35,9 +35,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install powershell (universal package) so we can test x.ps1 on Linux
 # FIXME: need a "universal" version that supports libicu74, but for now it still works to ignore that dep.
-RUN curl -sL "https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/powershell_7.3.1-1.deb_amd64.deb" > powershell.deb && \
-    dpkg --ignore-depends=libicu72 -i powershell.deb && \
-    rm -f powershell.deb
+# RUN curl -sL "https://github.com/PowerShell/PowerShell/releases/download/v7.3.1/powershell_7.3.1-1.deb_amd64.deb" > powershell.deb && \
+#     dpkg --ignore-depends=libicu72 -i powershell.deb && \
+#     rm -f powershell.deb
 
 COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh

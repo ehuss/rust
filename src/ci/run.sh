@@ -10,6 +10,8 @@ if [ -n "$CI_JOB_DOC_URL" ]; then
   echo "[CI_JOB_DOC_URL=$CI_JOB_DOC_URL]"
 fi
 
+sysctl -w kernel.core_pattern=/checkout/obj/eric-core
+
 if [ "$NO_CHANGE_USER" = "" ]; then
   if [ "$LOCAL_USER_ID" != "" ]; then
     id -u user &>/dev/null || useradd --shell /bin/bash -u $LOCAL_USER_ID -o -c "" -m user
@@ -33,9 +35,7 @@ fi
 if [ -f /proc/sys/kernel/core_pattern ]; then
   ulimit -c unlimited
 fi
-ulimit -c
 cat /proc/sys/kernel/core_pattern
-exit
 
 # There was a bad interaction between "old" 32-bit binaries on current 64-bit
 # kernels with selinux enabled, where ASLR mmap would sometimes choose a low

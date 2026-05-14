@@ -12,9 +12,5 @@ set -ex
 #   SKIP_TIDY="--skip tidy"
 # fi
 
-for i in {1..20}
-do
-  echo Step $i
-  rm -rf build/x86_64-unknown-linux-gnu/stage2-tools
-  ../x.py --stage 2 test src/tools/rust-analyzer
-done
+../x.py --stage 2 test src/tools/rust-analyzer || \
+    gdb -batch -ex "bt" /checkout/obj/build/x86_64-unknown-linux-gnu/stage2-tools/x86_64-unknown-linux-gnu/release/deps/hir_def-* /checkout/obj/eric-core
